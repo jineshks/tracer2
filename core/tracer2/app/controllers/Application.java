@@ -8,7 +8,7 @@ import play.mvc.Result;
 public class Application extends Controller {
   
     public static Result index() {
-    	Ticket ticket	= Ticket.find.byId(1L);
+    	Ticket ticket	= null;//Ticket.find.byId(1L);
     	if(ticket == null)
     		ticket = new Ticket();
         return ok(Json.toJson(ticket));
