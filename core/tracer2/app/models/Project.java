@@ -4,7 +4,9 @@
 package models;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -38,6 +40,11 @@ public class Project extends Model {
 	public Date updated;
 	@ManyToOne
 	public Visibility visibility;
+	
+	@ManyToOne(cascade=CascadeType.ALL)
+	public List<User> user;
+	
+	public static Model.Finder<Long,Project> find = new Model.Finder<Long,Project>(Long.class, Project.class);
 	/**
 	 * @return the id
 	 */
@@ -110,5 +117,18 @@ public class Project extends Model {
 	public void setVisibility(Visibility visibility) {
 		this.visibility = visibility;
 	}
+	/**
+	 * @return the user
+	 */
+	public List<User> getUser() {
+		return user;
+	}
+	/**
+	 * @param user the user to set
+	 */
+	public void setUser(List<User> user) {
+		this.user = user;
+	}
+	
 	
 }
