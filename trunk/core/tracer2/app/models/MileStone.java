@@ -8,6 +8,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import play.data.format.Formats;
 import play.db.ebean.Model;
@@ -36,7 +37,8 @@ public class MileStone extends Model {
 	    
 	    @Formats.DateTime(pattern="yyyy-MM-dd HH:mm:ss")
 	    public Date ended;
-	    
+	    @ManyToOne
+	    public Project project ;
 	    public static Model.Finder<Long,MileStone> find = new Model.Finder<Long,MileStone>(Long.class, MileStone.class);
 
 		/**
@@ -108,4 +110,20 @@ public class MileStone extends Model {
 		public void setEnded(Date ended) {
 			this.ended = ended;
 		}
+
+		/**
+		 * @return the project
+		 */
+		public Project getProject() {
+			return project;
+		}
+
+		/**
+		 * @param project the project to set
+		 */
+		public void setProject(Project project) {
+			this.project = project;
+		}
+		
+		
 }
