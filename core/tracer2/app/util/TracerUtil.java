@@ -5,6 +5,10 @@ package util;
 
 import java.util.Random;
 
+import org.codehaus.jackson.node.ObjectNode;
+
+import play.libs.Json;
+
 /**
  * @author Manzarul.Haque
  *
@@ -48,7 +52,110 @@ public class TracerUtil {
 		TracerLogger.debug(builder.toString(),tracerUtil);
 		return builder.toString();
 	}
+    
+	
+	/**
+	 * this method will crate invalid session response as json and send it to
+	 * controller.
+	 * 
+	 * @return
+	 */
+	public static ObjectNode invalidSessionResponse() {
+		ObjectNode response = Json.newObject();
+		response.put(JsonKey.STATUS_CODE,
+				ResponseCode.InvalidSession.getErrorCode());
+		response.put(JsonKey.STATUS_MESSAGE,
+				ResponseCode.FAILURE.getErrorMessage());
+		response.put(JsonKey.ERROR_MESSAGE,
+				ResponseCode.InvalidSession.getErrorMessage());
+		TracerLogger.debug(response.toString(),tracerUtil);
+		return response;
+	}
 
+	/**
+	 * this method will crate invalid access response as json and send it to
+	 * controller.
+	 * 
+	 * @return ObjectNode object.
+	 */
+	public static ObjectNode InvalidAccessResponse() {
+		ObjectNode response = Json.newObject();
+		response.put(JsonKey.STATUS_CODE,
+				ResponseCode.RoleAccessNotFound.getErrorCode());
+		response.put(JsonKey.STATUS_MESSAGE,
+				ResponseCode.FAILURE.getErrorMessage());
+		response.put(JsonKey.ERROR_MESSAGE,
+				ResponseCode.RoleAccessNotFound.getErrorMessage());
+		return response;
+	}
+
+
+	/**
+	 * this method will crate invalid access response as json and send it to
+	 * controller.
+	 * 
+	 * @return ObjectNode object.
+	 */
+	public static ObjectNode InvalidDataResponse() {
+		ObjectNode response = Json.newObject();
+		response.put(JsonKey.STATUS_CODE,
+				ResponseCode.InCorrectData.getErrorCode());
+		response.put(JsonKey.STATUS_MESSAGE,
+				ResponseCode.FAILURE.getErrorMessage());
+		response.put(JsonKey.ERROR_MESSAGE,
+				ResponseCode.InCorrectData.getErrorMessage());
+		return response;
+	}
+	
+	
+	/**
+	 * this method will crate failure response and send to 
+	 * controller.
+	 * 
+	 * @return ObjectNode object.
+	 */
+	public static ObjectNode failureResponse() {
+		ObjectNode response = Json.newObject();
+		response.put(JsonKey.STATUS_CODE,
+				ResponseCode.FAILURE.getErrorCode());
+		response.put(JsonKey.STATUS_MESSAGE,
+				ResponseCode.FAILURE.getErrorMessage());
+		response.put(JsonKey.ERROR_MESSAGE,
+				ResponseCode.FAILURE.getErrorMessage());
+		TracerLogger.debug("sending data===>"+response, tracerUtil);
+		return response;
+	}
+	
+	/**
+	 * this method will crate success response and send to 
+	 * controller.
+	 * 
+	 * @return ObjectNode object.
+	 */
+	public static ObjectNode successResponse(Object obj) {
+		ObjectNode response = Json.newObject();
+		response.put(JsonKey.STATUS_CODE,
+				ResponseCode.Success.getErrorCode());
+		response.put(JsonKey.STATUS_MESSAGE,
+				ResponseCode.Success.getErrorMessage());
+		response.put(JsonKey.ERROR_MESSAGE,"");
+		if(obj != null){
+			response.put(JsonKey.RESPONSE_DATE, Json.toJson(obj));
+		}
+		TracerLogger.debug("sending data ===>"+response, tracerUtil);
+		return response;
+	}
+	
+	/**
+	 * this method is used to check user have access 
+	 * of particular action or not
+	 * @param userId
+	 * @param action
+	 * @return
+	 */
+	public boolean checkUserAccess(long userId,String action){
+		return true;
+	}
 	public static void main(String[] args) {
 		System.out.println(getUniqueId("manzarul07@gmail.com"));
 	}
