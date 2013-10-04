@@ -17,7 +17,7 @@ public class SendMail implements Cloneable{
 	static {
 		sendMail = new SendMail();
 	}
-	
+	 
 	
 	private SendMail(){
 		if(sendMail == null){
