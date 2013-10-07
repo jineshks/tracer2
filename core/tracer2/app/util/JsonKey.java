@@ -52,4 +52,10 @@ public class JsonKey {
     public static final String  STATUS_MESSAGE = "StatusMessage";
     public static final String  ERROR_MESSAGE = "ErrorMessage";
     public static final String  RESPONSE_DATE  ="ResponseData";
+    
+    public static final String NAME = "name";
+    public static final String DESCRIPTION = "description";
+    public static final String  VISIBLITY = "visibility";
+    public static final String  PROJECT_ID = "projectId";
+    public static final String ASSIGN_USER_ID = "assignUserId";
 }
