@@ -44,6 +44,9 @@ public class Project extends Model {
 	@ManyToOne(cascade=CascadeType.ALL)
 	public List<User> user;
 	
+	@Column(name="created_by")
+	@ManyToOne
+	public User createdBy;
 	public static Model.Finder<Long,Project> find = new Model.Finder<Long,Project>(Long.class, Project.class);
 	/**
 	 * @return the id
@@ -129,6 +132,17 @@ public class Project extends Model {
 	public void setUser(List<User> user) {
 		this.user = user;
 	}
-	
+	/**
+	 * @return the createdBy
+	 */
+	public User getCreatedBy() {
+		return createdBy;
+	}
+	/**
+	 * @param createdBy the createdBy to set
+	 */
+	public void setCreatedBy(User createdBy) {
+		this.createdBy = createdBy;
+	}
 	
 }
