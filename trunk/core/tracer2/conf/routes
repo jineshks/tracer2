@@ -5,9 +5,10 @@
 # Home page
 GET     /                           				controllers.Application.index()
 
-GET  /login									controllers.UserController.login()
-GET /saveProject            				controllers.UserController.addProject()
-GET /addUserToProject            	controllers.UserController.addUserToProject()
-GET /addUser            					controllers.UserController.addUser()
+GET    /api/tracer.com/v1/login									controllers.UserController.login()
+GET   /api/tracer.com/v1/addProject            				controllers.UserController.addProject()
+GET   /api/tracer.com/v1/addUserToProject            		controllers.UserController.addUserToProject()
+GET   /api/tracer.com/v1/inviteUser            					controllers.UserController.inviteUser()
+GET   /api/tracer.com/v1/registration            				controllers.UserController.registration()
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
