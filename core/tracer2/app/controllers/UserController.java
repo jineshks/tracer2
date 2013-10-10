@@ -107,6 +107,11 @@ public class UserController extends Controller {
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
+		boolean hasUserAccess = TracerUtil.checkUserAccess(userId,"inviteUser");	
+			if(!hasUserAccess) {
+				return ok(TracerUtil.InvalidAccessResponse());
+			}
+		
 		Project project = new Project();
 		project.setCreated(new Date());
 		project.setDescription(description);
@@ -150,7 +155,11 @@ public class UserController extends Controller {
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-
+		
+		  boolean hasUserAccess = TracerUtil.checkUserAccess(userId,"inviteUser");	
+			if(!hasUserAccess) {
+				return ok(TracerUtil.InvalidAccessResponse());
+			}
 		Project	project = Ebean.createQuery(Project.class).where()
 				.eq("id", projectId).findUnique();
 		User user = Ebean.createQuery(User.class).where()
@@ -188,6 +197,10 @@ public class UserController extends Controller {
 				.eq("sessionId", session).eq("user_id", userId).findUnique();
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
+		}
+	   boolean hasUserAccess = TracerUtil.checkUserAccess(userId,"inviteUser");	
+		if(!hasUserAccess) {
+			return ok(TracerUtil.InvalidAccessResponse());
 		}
 		User user = new User();
 		user.setEmail(email);
