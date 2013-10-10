@@ -153,7 +153,7 @@ public class TracerUtil {
 	 * @param action
 	 * @return
 	 */
-	public boolean checkUserAccess(long userId,String action){
+	public static boolean  checkUserAccess(long userId,String action){
 		return true;
 	}
 	public static void main(String[] args) {
