@@ -36,14 +36,12 @@ public class UserController extends Controller {
 	public static Result login() {
 		ObjectNode response = Json.newObject();
 		JsonNode json = request().body().asJson();
-		String userName = "manzarul07@gmail.com";
-		String password = "12qwaszx";
+		String userName = null;
+		String password = null;
 		Session session = null;
 		try {
-			
 			  userName = json.get(JsonKey.USER_NAME).asText(); 
 			  password =json.get(JsonKey.PASSWORD).asText();
-			 
 		} catch (Exception e) {
 			TracerLogger.error("" + e, userController);
 			return ok(TracerUtil.InvalidDataResponse());
@@ -178,7 +176,7 @@ public class UserController extends Controller {
 	 * @return
 	 */
 	public static Result inviteUser() {
-		String email = "manzarul07@gmail.com";
+		String email = null;
 		String session = "";
 		long userId = 0L;
 		JsonNode json = request().body().asJson();
@@ -220,10 +218,10 @@ public class UserController extends Controller {
 	 * @return
 	 */
 	public static Result registration() {
-		String name = "manzarul";
-		String email = "manzarul07@gmail.com";
-		String password = "12qwaszx";
-		String phone = "9663890445";
+		String name = null;
+		String email = null;
+		String password = null;
+		String phone = null;
 		JsonNode json = request().body().asJson();
 		try {
 			name = json.get(JsonKey.NAME).asText();
