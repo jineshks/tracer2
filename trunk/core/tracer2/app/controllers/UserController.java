@@ -65,9 +65,11 @@ public class UserController extends Controller {
 					.eq("user_id", user.getId()).findList();
 			LoginResponseData data = new LoginResponseData();
 			List<Project> projectList = new ArrayList<Project>();
+			if(userProjects != null) {
 			for (int i = 0; i < userProjects.size(); i++) {
 				projectList.add(userProjects.get(i).getProject());
 			}
+		  }	
 			data.setProjrctList(projectList);
 			user.setPassword("");
 			data.setUserInfo(session);
