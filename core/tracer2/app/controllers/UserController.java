@@ -179,7 +179,7 @@ public class UserController extends Controller {
 	 */
 	public static Result inviteUser() {
 		String email = null;
-		String session = "";
+		String session = null;
 		long userId = 0L;
 		JsonNode json = request().body().asJson();
 		try {
