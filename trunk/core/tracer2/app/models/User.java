@@ -6,7 +6,6 @@ package models;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
 
@@ -24,10 +23,9 @@ public class User  extends Model{
 	@Id
 	public long id;
 	
-	@Column(name="user_name")
 	public String name;
 	
-	@Constraints.Email
+	@Column(unique=true)
 	public String email;
 	
 	@Constraints.Required

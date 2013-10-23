@@ -20,9 +20,7 @@ public class SendMail implements Cloneable{
 	 
 	
 	private SendMail(){
-		if(sendMail == null){
-			sendMail = new SendMail();
-		}
+		
 	}
 	
 	public static synchronized SendMail getMailInstance(){
@@ -35,7 +33,7 @@ public class SendMail implements Cloneable{
 	public Object  clone()  throws CloneNotSupportedException{
 		throw new CloneNotSupportedException();
 	}
-    public   void sendMail(String receipent, String mail, String subject) {
+    public    void sendMail(String receipent, String mail, String subject) {
         try {
             String host = "smtp.gmail.com";
 
