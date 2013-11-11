@@ -58,4 +58,15 @@ public class JsonKey {
     public static final String  VISIBLITY = "visibility";
     public static final String  PROJECT_ID = "projectId";
     public static final String ASSIGN_USER_ID = "assignUserId";
+    public static final String CREATED_DATE = "created";
+    public static final String ENDED_DATE = "ended";
+    public static final String STATUS = "status";
+    public static final String TITLE = "title";
+    public static final String PHASE_ID = "phaseId";
+    public static final String OWNER_ID = "ownerId";
+    public static final String MILE_STONE_ID = "mileStoneId";
+    public static final String SEVERITY = "severityId";
+    public static final String COMPLEXITY_ID = "complexityId";
+    public static final String ESTIMATED_HOURS = "estimatedHours";
+    public static final String ACTUAL_HOURS = "actualHours";
 }

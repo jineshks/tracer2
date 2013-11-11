@@ -37,7 +37,7 @@ public class SendMail implements Cloneable{
         try {
             String host = "smtp.gmail.com";
 
-            String from = "tarcertarento@gmail.com";
+            String from = "tracertarento@gmail.com";
 
             String pass = "12qwaszx123";
 
@@ -46,7 +46,7 @@ public class SendMail implements Cloneable{
             props.put("mail.smtp.host", host);
             props.put("mail.smtp.user", from);
             props.put("mail.smtp.password", pass);
-            props.put("mail.smtp.port", "25");
+            props.put("mail.smtp.port", "587");
             props.put("mail.smtp.auth", "true");
 
             String[] to = new String[1];
@@ -69,53 +69,20 @@ public class SendMail implements Cloneable{
                 message.addRecipient(Message.RecipientType.TO, toAddress[i]);
             }
 
-            String Text = "" +
-                    "<html>" +
-                    "<head>" +
-                    "</head>" +
-                    "<body>" +
-                    "<table align='center' width='500' border='0' cellspacing='0' cellpadding='0'>" +
-                    "<tr>" +
-                    "<td>" +
-                    "<img src='' height='31' width='500' />" +
-                    "</td>" +
-                    "</tr>" +
-                    "<tr>" +
-                    "<td>" +
-                    "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" +
-                    "<tr>" +
-                    "<td width='17px'>" +
-                    "<img src='' height='354' width='17' />" +
-                    "</td>" +
-                    "<td bgcolor='#ebaf02' width='572px' valign='top'>" +
-                    "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" +
-                    "<tr>" +
-                    "<td width='525' valign='top' style='padding-left:10px; font:Helvetica Neue Medium; color:#FFFFFF;'>" +
-                    "<br />" +
-                    "<br />" +
-                    mail +
-                    "</td>" +
-                    "<td width='60' valign='top' align='right'>" +
-                    "<img src='' height='40' width='60' />" +
-                    "</td>" +
-                    "</tr>" +
-                    "</table>" +
-                    "</td>" +
-                    "<td width='8px'>" +
-                    "<img src='' height='354' width='8'>" +
-                    "</td>" +
-                    "</tr>" +
-                    "</table>" +
-                    "</td>" +
-                    "</tr>" +
-                    "<tr>" +
-                    "<td>" +
-                    "<img src='' height='21' width='500' alt='' />" +
-                    "</td>" +
-                    "</tr>" +
-                    "</table>" +
-                    "</body>" +
-                    "</html>";
+            String Text = "<html><head>"+"</head> <body align='center'>"
+			  +" <div align='center'> " +
+			   " <div style='width:550;height:550; color:blue; border-style: none;border-color: #008000;'  >" 
+			     +"<div style='width:550;height:550; background-color: #EBAF02;text-align: left;' > " 
+				+" <img src='file:///C:/Users/Manzarul.Haque/Desktop/cabhound-logo.png' height='30' width='50' alt='' align='right' />"+
+				" <br/><br/>"+
+				 "  <p>"+
+				    " Hi  Manzarul ,"+ 
+					 "</p>"+
+					"<p style='word-wrap:break-word;'>"+mail+"</p><br/><br/>"+
+					"<div style='background-color: black;'><p style='color:white;' align='center'>"+" contact us:"+" <br/>"+" phone: 9663890445 "+"<br/>"+"Email:manzarul07@gmail.com "+"</p></div>"+
+					"<div style='margin_bottom:10px;'>"+
+					" <img src='file:///C:/Users/Manzarul.Haque/Desktop/cabhound-logo.png' height='30' width='50' alt='' align='left' />"+
+					"</div><br/><br/></div></div> </div></body></html>";
 
             message.setSubject(subject);
             
@@ -193,6 +160,6 @@ public class SendMail implements Cloneable{
     }
     
     public static void main(String[] args) {
-		new SendMail().sendMail("manzarul07@gmail.com", "test mail", "new Registration");
+		new SendMail().sendMail("manzarul.haque@tarento.com", "test mail fkdjgggggggggggggggggggggggggggggfhhjdfriouwerjgkfgfkjkjgfdkjhkgkjhhkjhkjhkhyttiyfnmgmngfnhghjhfdioihhhjgfjgytuioiudfriouwerjgkfgfkjkjgfdkjhkgkjhhkjhkjhkhyttiyfnmgmngfnhghjhfdioihhhjgfjgytuioiudfriouwerjgkfgfkjkjgfdkjhkgkjhhkjhkjhkhyttiyfnmgmngfnhghjhfdioihhhjgfjgytuioiu", "new Registration");
 	}
 }
