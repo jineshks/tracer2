@@ -69,7 +69,36 @@ public class Ticket  extends Model{
     public Project project;
     @OneToMany
     public Type type;
+    
+    public double estimatedHours ;
+    
+    public double actulHours ;
     public static Model.Finder<Long,Ticket> find = new Model.Finder<Long,Ticket>(Long.class, Ticket.class);
+    
+    /**
+	 * @return the estimatedHours
+	 */
+	public double getEstimatedHours() {
+		return estimatedHours;
+	}
+	/**
+	 * @param estimatedHours the estimatedHours to set
+	 */
+	public void setEstimatedHours(double estimatedHours) {
+		this.estimatedHours = estimatedHours;
+	}
+	/**
+	 * @return the actulHours
+	 */
+	public double getActulHours() {
+		return actulHours;
+	}
+	/**
+	 * @param actulHours the actulHours to set
+	 */
+	public void setActulHours(double actulHours) {
+		this.actulHours = actulHours;
+	}
 	/**
 	 * @return the dateFormat
 	 */

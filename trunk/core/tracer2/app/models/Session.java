@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import play.data.format.Formats;
 import play.data.format.Formats.DateTime;
 import play.db.ebean.Model;
+import util.DateUtil;
 
 /**
  * @author Manzarul.Haque
@@ -53,8 +54,8 @@ public class Session  extends Model {
 	/**
 	 * @return the created
 	 */
-	public Date getCreated() {
-		return created;
+	public String getCreated() {
+	   return  DateUtil.getFormattedDateWithTimeZone(created);
 	}
 	/**
 	 * @param created the created to set
@@ -65,8 +66,8 @@ public class Session  extends Model {
 	/**
 	 * @return the updated
 	 */
-	public Date getUpdated() {
-		return updated;
+	public String getUpdated() {
+		return  DateUtil.getFormattedDateWithTimeZone(updated);
 	}
 	/**
 	 * @param updated the updated to set

@@ -96,7 +96,10 @@ public class User  extends Model{
 	 * @return the password
 	 */
 	public String getPassword() {
-		return password;
+		if(password.length()>4) {
+		return "XXXX"+password.subSequence(password.length()-4 ,password.length());
+		} 
+		return "XXXXXXX";
 	}
 
 	/**

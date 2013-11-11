@@ -14,19 +14,19 @@ import models.Session;
  */
 public class LoginResponseData {
 	
-	private List<Project> projrctList;
+	private List<Project> projectList;
    private 	Session  userInfo;
 /**
  * @return the projrctList
  */
-public List<Project> getProjrctList() {
-	return projrctList;
+public List<Project> getProjectList() {
+	return projectList;
 }
 /**
  * @param projrctList the projrctList to set
  */
-public void setProjrctList(List<Project> projrctList) {
-	this.projrctList = projrctList;
+public void setProjectList(List<Project> projrctList) {
+	this.projectList = projrctList;
 }
 /**
  * @return the userInfo
