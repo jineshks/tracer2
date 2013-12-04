@@ -10,18 +10,18 @@ package util;
  * @author Manzarul.Haque
  * 
  */
-public class TracerLogger {
+public class TrackLogger {
 	
 	/**
 	 * this method provides message along with class name and line number
 	 * 
 	 * @param data
 	 *            String message
-	 * @param object
-	 *            calling class object
+	 * @param className
+	 *            calling class name
 	 */
-	public static void debug(String data, Object object) {
-		play.Logger.debug(data + getClassNameAndLineNo(object));
+	public static void debug(String data, String className) {
+		play.Logger.debug(data + getClassNameAndLineNo(className));
 	}
 
 	/**
@@ -29,11 +29,11 @@ public class TracerLogger {
 	 * 
 	 * @param data
 	 *            String message
-	 * @param object
-	 *            calling class object
+	 * @param className
+	 *            calling class name
 	 */
-	public static void error(String data, Object object) {
-		play.Logger.error(data + getClassNameAndLineNo(object));
+	public static void error(String data, String className) {
+		play.Logger.error(data + getClassNameAndLineNo(className));
 	}
 
 	/**
@@ -41,25 +41,25 @@ public class TracerLogger {
 	 * 
 	 * @param data
 	 *            String message
-	 * @param object
-	 *            calling class object
+	 * @param className
+	 *            calling class name
 	 */
-	public static void info(String data, Object object) {
-		play.Logger.error(data + getClassNameAndLineNo(object));
+	public static void info(String data, String className) {
+		play.Logger.error(data + getClassNameAndLineNo(className));
 	}
 
 	/**
 	 * this method is used to print class name and line number
 	 * 
-	 * @param object
+	 * @param className
 	 * @return
 	 */
-	private static String getClassNameAndLineNo(Object object) {
+	private static String getClassNameAndLineNo(String className) {
 		String message = "";
-		if(object == null) {
+		if(className == null) {
 			return message ="can't get line number.";
 		}
-		message = " " + object.getClass().getName() + "********"
+		message =  className+ "********"
 				+ Thread.currentThread().getStackTrace()[3].getLineNumber();
 		return message;
 	}

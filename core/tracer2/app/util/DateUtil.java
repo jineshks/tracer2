@@ -15,11 +15,7 @@ import play.Logger;
  */
 public class DateUtil {
 	
-	private static DateUtil dateUtil = null;
-	static{
-		dateUtil = new DateUtil();
-	}
-
+	private static final  String className = DateUtil.class.getName();
     public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	/**
      * this method take date object and time zone ,  time zone is optional
@@ -127,7 +123,13 @@ public class DateUtil {
         Date date = new Date(time);
         return format.format(date);
     }
-
+    
+/**
+ * 
+ * @param date
+ * @param timeZone
+ * @return
+ */
     public static String getSqlTimeStamp(Date date,String ... timeZone) {
 
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -292,22 +294,29 @@ public class DateUtil {
     	SimpleDateFormat dateFormat =  new SimpleDateFormat("yyyy-MM-dd HH:mm");
     	dateFormat.setTimeZone(TimeZone.getTimeZone(Constants.TIME_ZONE));
     	Date  reservationDate =  dateFormat.parse(time);
-    	TracerLogger.debug("reservation date time with incoming time zone====>" + reservationDate, dateUtil);
+    	TrackLogger.debug("reservation date time with incoming time zone====>" + reservationDate, className);
     	//dateFormat.setTimeZone(TimeZone.getDefault());
     	reservationDate = dateFormat.parse(dateFormat.format(reservationDate));
-    	TracerLogger.debug("reservation date time with default time zone====>" + reservationDate, dateUtil);
+    	TrackLogger.debug("reservation date time with default time zone====>" + reservationDate, className);
     	Date currentDate = DateUtil.convertStringToDateWithTime(DateUtil.getFormattedDateWithTimeZone(new Date()));
     	 if(reservationDate.before(currentDate)){ 
     		 isTimeValid = false;
-         TracerLogger.debug("reservation time is not valid===>"+ isTimeValid, dateUtil);		 
+         TrackLogger.debug("reservation time is not valid===>"+ isTimeValid, className);		 
     	 }
     	return isTimeValid;
     }
-    
+  /**
+   *   
+   * @param args
+   */
   public static void main(String[] args) {
 	  getConvertDateForSmS("Asia/Calcutta","2013-09-27 11:22");
 }  
- 
+ /**
+  * 
+  * @param date
+  * @return
+  */
   public static Date convertStringToDate(String date) {
 	  SimpleDateFormat format = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
       Date afterFormat = null;
@@ -318,7 +327,12 @@ public class DateUtil {
       }
       return afterFormat;
   }
-  
+  /**
+   * 
+   * @param timeZone
+   * @param date
+   * @return
+   */
   public static String getConvertDateForSmS(String timeZone,String date) {
       SimpleDateFormat format = new SimpleDateFormat("dd MMM hh:mm a");
       SimpleDateFormat incomingFormatter = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
@@ -333,10 +347,6 @@ public class DateUtil {
       }
       return response;
   }    //
-  
-  public static final SimpleDateFormat dateFormatWithOutSeconds = new SimpleDateFormat("MM-dd-yyyy  HH:mm");
-  public static final SimpleDateFormat dateFormatWithOutMilliSeconds = new SimpleDateFormat("MM-dd-yyyy  HH:mm:ss");
-  
   
   /**
 	 * get trip duration from milliseconds 
