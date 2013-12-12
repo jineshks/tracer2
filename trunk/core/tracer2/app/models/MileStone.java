@@ -3,6 +3,7 @@
  */
 package models;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -19,6 +20,7 @@ import play.db.ebean.Model;
  */
 @Entity
 public class MileStone extends Model {
+	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	/**
 	 * 
 	 */
@@ -86,8 +88,8 @@ public class MileStone extends Model {
 		/**
 		 * @return the created
 		 */
-		public Date getCreated() {
-			return created;
+		public String getCreated() {
+			return dateFormat.format(created);
 		}
 
 		/**
@@ -100,8 +102,8 @@ public class MileStone extends Model {
 		/**
 		 * @return the ended
 		 */
-		public Date getEnded() {
-			return ended;
+		public String getEnded() {
+			return dateFormat.format(ended);
 		}
 
 		/**

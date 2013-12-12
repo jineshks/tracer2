@@ -51,10 +51,10 @@ public class Ticket  extends Model{
     public String ticketStatus;
    
     @ManyToOne
-    public User ownerId;
+    public User owner;
     
     @ManyToOne
-    public User createrId;
+    public User creater;
     
     @ManyToOne
     public MileStone mileStone;
@@ -65,9 +65,9 @@ public class Ticket  extends Model{
     @ManyToOne
     public Complexity complexity;
     
-    @OneToMany
+    @ManyToOne
     public Project project;
-    @OneToMany
+    @ManyToOne
     public Type type;
     
     public double estimatedHours ;
@@ -99,18 +99,7 @@ public class Ticket  extends Model{
 	public void setActulHours(double actulHours) {
 		this.actulHours = actulHours;
 	}
-	/**
-	 * @return the dateFormat
-	 */
-	public SimpleDateFormat getDateFormat() {
-		return dateFormat;
-	}
-	/**
-	 * @param dateFormat the dateFormat to set
-	 */
-	public void setDateFormat(SimpleDateFormat dateFormat) {
-		this.dateFormat = dateFormat;
-	}
+
 	/**
 	 * @return the id
 	 */
@@ -150,8 +139,8 @@ public class Ticket  extends Model{
 	/**
 	 * @return the created
 	 */
-	public Date getCreated() {
-		return created;
+	public String getCreated() {
+		return dateFormat.format(created);
 	}
 	/**
 	 * @param created the created to set
@@ -162,8 +151,8 @@ public class Ticket  extends Model{
 	/**
 	 * @return the updated
 	 */
-	public Date getUpdated() {
-		return updated;
+	public String getUpdated() {
+		return dateFormat.format(updated);
 	}
 	/**
 	 * @param updated the updated to set
@@ -195,30 +184,32 @@ public class Ticket  extends Model{
 	public void setTicketStatus(String ticketStatus) {
 		this.ticketStatus = ticketStatus;
 	}
+	
 	/**
-	 * @return the ownerId
+	 * @return the owner
 	 */
-	public User getOwnerId() {
-		return ownerId;
+	public User getOwner() {
+		return owner;
 	}
 	/**
-	 * @param ownerId the ownerId to set
+	 * @param owner the owner to set
 	 */
-	public void setOwnerId(User ownerId) {
-		this.ownerId = ownerId;
+	public void setOwner(User owner) {
+		this.owner = owner;
 	}
 	/**
-	 * @return the createrId
+	 * @return the creater
 	 */
-	public User getCreaterId() {
-		return createrId;
+	public User getCreater() {
+		return creater;
 	}
 	/**
-	 * @param createrId the createrId to set
+	 * @param creater the creater to set
 	 */
-	public void setCreaterId(User createrId) {
-		this.createrId = createrId;
+	public void setCreater(User creater) {
+		this.creater = creater;
 	}
+
 	/**
 	 * @return the mileStone
 	 */

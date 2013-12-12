@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import models.Comment;
 import models.Complexity;
 import models.MileStone;
 import models.Phase;
@@ -28,6 +29,7 @@ import util.TracerUtil;
 import util.TrackLogger;
 
 import com.avaje.ebean.Ebean;
+import com.avaje.ebean.FetchConfig;
 
 /**
  * this controller will handle all user related operations.
@@ -47,8 +49,8 @@ public class UserController extends Controller {
 	 */
 	public static Result login() {
 		JsonNode json = request().body().asJson();
-		String userName = null;
-		String password = null;
+		String userName =null;
+		String password =null;
 		Session session = null;
 		try {
 			userName = json.get(JsonKey.USER_NAME).asText();
@@ -57,8 +59,10 @@ public class UserController extends Controller {
 			TrackLogger.error(e.getMessage(), className);
 			return ok(TracerUtil.InvalidDataResponse());
 		}
+		
 		User user = Ebean.createQuery(User.class).where().eq("email", userName)
 				.eq("password", password).findUnique();
+
 		if (user != null) {
 			session = Ebean.createQuery(Session.class).where()
 					.eq("user_id", user.getId()).findUnique();
@@ -312,85 +316,6 @@ public class UserController extends Controller {
 		mileStone.setProject(project);
 		mileStone.setStatus(status);
 		Ebean.save(mileStone);
-		return ok(TracerUtil.successResponse());
-	}
-
-	/**
-	 * this method will create new tickets.
-	 * 
-	 * @return
-	 */
-	public static Result createTickets() {
-		String title = null;
-		String description = null;
-		int phaseId;
-		long createrId;
-		long ownerId;
-		long mileStoneId;
-		int severityId;
-		int complexityId;
-		String sessionId = null;
-		int projectId;
-		String status;
-		double estimatedHours;
-		double actualHours;
-		JsonNode json = request().body().asJson();
-		try {
-			title = json.get(JsonKey.TITLE).asText();
-			description = json.get(JsonKey.DESCRIPTION).asText();
-			sessionId = json.get(JsonKey.SESSION).asText();
-			projectId = json.get(JsonKey.PROJECT_ID).asInt();
-			createrId = json.get(JsonKey.USER_ID).asLong();
-			status = json.get(JsonKey.STATUS).asText();
-			phaseId = json.get(JsonKey.PHASE_ID).asInt();
-			ownerId = json.get(JsonKey.OWNER_ID).asLong();
-			mileStoneId = json.get(JsonKey.MILE_STONE_ID).asLong();
-			severityId = json.get(JsonKey.SEVERITY).asInt();
-			complexityId = json.get(JsonKey.COMPLEXITY_ID).asInt();
-			estimatedHours = json.get(JsonKey.ESTIMATED_HOURS).asDouble();
-			actualHours = json.get(JsonKey.ACTUAL_HOURS).asDouble();
-		} catch (Exception e) {
-			TrackLogger.error(e.getMessage(), className);
-			return ok(TracerUtil.InvalidDataResponse());
-		}
-		Session userSession = Ebean.createQuery(Session.class).where()
-				.eq("sessionId", sessionId).eq("user_id", createrId)
-				.findUnique();
-		if (userSession == null) {
-			return ok(TracerUtil.invalidSessionResponse());
-		}
-		User user = userSession.getUser();
-		Project project = Ebean.createQuery(Project.class).where()
-				.eq("id", projectId).findUnique();
-		MileStone mileStone = Ebean.createQuery(MileStone.class).where()
-				.eq("id", mileStoneId).findUnique();
-		User owner = Ebean.createQuery(User.class).where().eq("id", ownerId)
-				.findUnique();
-		Severity severity = Ebean.createQuery(Severity.class).where()
-				.eq("id", severityId).findUnique();
-		Complexity complexity = Ebean.createQuery(Complexity.class).where()
-				.eq("id", complexityId).findUnique();
-		Phase phase = Ebean.createQuery(Phase.class).where().eq("id", phaseId)
-				.findUnique();
-		if (project == null || user == null || owner == null) {
-			return ok(TracerUtil.InvalidDataResponse());
-		}
-		Ticket ticket = new Ticket();
-		ticket.setActulHours(actualHours);
-		ticket.setEstimatedHours(estimatedHours);
-		ticket.setComplexity(complexity);
-		ticket.setCreated(new Date());
-		ticket.setCreaterId(user);
-		ticket.setDescription(description);
-		ticket.setMileStone(mileStone);
-		ticket.setOwnerId(owner);
-		ticket.setPhase(phase);
-		ticket.setProject(project);
-		ticket.setSeverity(severity);
-		ticket.setTicketStatus(status);
-		ticket.setTitle(title);
-		ticket.setUpdated(new Date());
-		Ebean.save(ticket);
 		return ok(TracerUtil.successResponse());
 	}
 
