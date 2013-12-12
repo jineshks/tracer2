@@ -8,6 +8,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import play.data.format.Formats;
 import play.db.ebean.Model;
@@ -31,9 +32,12 @@ public class Comment extends Model {
 	@Formats.DateTime(pattern="yyyy-MM-dd HH:mm:ss")
     public Date created;
 	
-	@Column(name="user_id")
+	@ManyToOne
 	public User user;
-
+	
+	@ManyToOne
+	public Ticket ticket;
+	
 	/**
 	 * @return the id
 	 */
@@ -88,6 +92,20 @@ public class Comment extends Model {
 	 */
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	/**
+	 * @return the ticket
+	 */
+	public Ticket getTicket() {
+		return ticket;
+	}
+
+	/**
+	 * @param ticket the ticket to set
+	 */
+	public void setTicket(Ticket ticket) {
+		this.ticket = ticket;
 	}
 	
 }

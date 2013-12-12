@@ -45,8 +45,8 @@ public class Project extends Model {
 	@ManyToOne(cascade=CascadeType.ALL)
 	public List<User> user;
 	
-	@Column(name="created_by")
-	@ManyToOne
+	@Column(name="creater")
+	@ManyToOne(cascade=CascadeType.ALL)
 	public User createdBy;
 	public static Model.Finder<Long,Project> find = new Model.Finder<Long,Project>(Long.class, Project.class);
 	/**

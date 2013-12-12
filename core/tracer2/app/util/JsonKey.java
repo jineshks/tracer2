@@ -57,6 +57,7 @@ public class JsonKey {
     public static final String DESCRIPTION = "description";
     public static final String  VISIBLITY = "visibility";
     public static final String  PROJECT_ID = "projectId";
+    public static final String  TICKET_ID = "ticketId";
     public static final String ASSIGN_USER_ID = "assignUserId";
     public static final String CREATED_DATE = "created";
     public static final String ENDED_DATE = "ended";

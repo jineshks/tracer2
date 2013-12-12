@@ -1,6 +1,3 @@
-/**
- * 
- */
 package util;
 
 import java.text.DateFormat;
