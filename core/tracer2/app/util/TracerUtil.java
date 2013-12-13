@@ -5,7 +5,11 @@ package util;
 
 import java.util.Random;
 
+import models.Session;
+
 import org.codehaus.jackson.node.ObjectNode;
+
+import com.avaje.ebean.Ebean;
 
 import play.libs.Json;
 
@@ -189,6 +193,11 @@ public class TracerUtil {
 	public static boolean  checkUserAccess(long userId,String action){
 		return true;
 	}
+	
+	/**
+	 * main method.
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		System.out.println(getUniqueId("manzarul07@gmail.com"));
 	}
@@ -203,6 +212,16 @@ public class TracerUtil {
 		if (value == null || "".equalsIgnoreCase(value.trim()))
 			return true;
 		return false;
+	}
+	/**
+	 * this method will check user session. if session found in db then 
+	 * session object will be returned else null.
+	 * @param sessionId session id.
+	 * @param userId  long user id
+	 * @return  Session object
+	 */
+	public static Session checkSession(String sessionId, long userId) {
+		return Ebean.createQuery(Session.class).where().eq("sessionId", sessionId).eq("user_id", userId).findUnique();
 	}
 	
 }

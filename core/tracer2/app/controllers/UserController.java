@@ -1,35 +1,23 @@
 package controllers;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
-import models.Comment;
-import models.Complexity;
-import models.MileStone;
-import models.Phase;
 import models.Project;
 import models.Session;
-import models.Severity;
-import models.Ticket;
 import models.User;
-import models.UserProject;
-import models.Visibility;
 
 import org.codehaus.jackson.JsonNode;
 
 import play.mvc.Controller;
 import play.mvc.Result;
 import responseBean.LoginResponseData;
+import service.UserService;
 import util.JsonKey;
-import util.PropertyReader;
-import util.SendMail;
 import util.TracerUtil;
 import util.TrackLogger;
+import Dao.UserDao;
 
 import com.avaje.ebean.Ebean;
-import com.avaje.ebean.FetchConfig;
 
 /**
  * this controller will handle all user related operations.
@@ -38,9 +26,8 @@ import com.avaje.ebean.FetchConfig;
  * 
  */
 public class UserController extends Controller {
-	private static final  String className = UserController.class.getName();
-	static SimpleDateFormat dateFormat = new SimpleDateFormat(
-			"yyyy-MM-dd HH:mm:ss");
+	private static final String className = UserController.class.getName();
+	static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	/**
 	 * this method is used to user login.
@@ -49,9 +36,8 @@ public class UserController extends Controller {
 	 */
 	public static Result login() {
 		JsonNode json = request().body().asJson();
-		String userName =null;
-		String password =null;
-		Session session = null;
+		String userName = null;
+		String password = null;
 		try {
 			userName = json.get(JsonKey.USER_NAME).asText();
 			password = json.get(JsonKey.PASSWORD).asText();
@@ -59,36 +45,15 @@ public class UserController extends Controller {
 			TrackLogger.error(e.getMessage(), className);
 			return ok(TracerUtil.InvalidDataResponse());
 		}
-		
-		User user = Ebean.createQuery(User.class).where().eq("email", userName)
-				.eq("password", password).findUnique();
-
-		if (user != null) {
-			session = Ebean.createQuery(Session.class).where()
-					.eq("user_id", user.getId()).findUnique();
-			if (session != null) {
-				Ebean.delete(session);
+		try {
+			UserService userService = UserService.getInstance();
+			LoginResponseData data = userService.login(userName, password);
+			if (data != null) {
+				return ok(TracerUtil.successResponse(data));
 			}
-			session = new Session();
-			session.setSessionId(TracerUtil.getUniqueId(user.getEmail()));
-			session.setUser(user);
-			session.setUpdated(new Date());
-			session.setCreated(new Date());
-			Ebean.save(session);
-			List<UserProject> userProjects = Ebean
-					.createQuery(UserProject.class).where()
-					.eq("user_id", user.getId()).findList();
-			LoginResponseData data = new LoginResponseData();
-			List<Project> projectList = new ArrayList<Project>();
-			if (userProjects != null) {
-				for (int i = 0; i < userProjects.size(); i++) {
-					projectList.add(userProjects.get(i).getProject());
-				}
-			}
-			data.setProjectList(projectList);
-			user.setPassword("");
-			data.setUserInfo(session);
-			return ok(TracerUtil.successResponse(data));
+		} catch (Exception e) {
+			TrackLogger.error(e.getMessage(), className);
+			return ok(TracerUtil.failureResponse());
 		}
 		return ok(TracerUtil.unAuthorisedResponse());
 	}
@@ -115,43 +80,21 @@ public class UserController extends Controller {
 			TrackLogger.error(e.getMessage(), className);
 			return ok(TracerUtil.InvalidDataResponse());
 		}
-		Session userSession = Ebean.createQuery(Session.class).where()
-				.eq("sessionId", sessionId).eq("user_id", userId).findUnique();
+
+		Session userSession = TracerUtil.checkSession(sessionId, userId);
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		boolean hasUserAccess = TracerUtil
-				.checkUserAccess(userId, "inviteUser");
+		boolean hasUserAccess = TracerUtil.checkUserAccess(userId, "inviteUser");
 		if (!hasUserAccess) {
 			return ok(TracerUtil.InvalidAccessResponse());
 		}
-
-		Project project = new Project();
-		project.setCreated(new Date());
-		project.setDescription(description);
-		project.setName(projectName);
-		project.setUpdated(new Date());
-		Visibility visib = Ebean.createQuery(Visibility.class).where()
-				.eq("id", visibility).findUnique();
-		Ebean.save(visib);
-		project.setVisibility(visib);
-		User user = Ebean.createQuery(User.class).where().eq("id", userId)
-				.findUnique();
-		project.setCreatedBy(user);
-		Ebean.save(project);
-		MileStone mileStone = new MileStone();
-		mileStone.setName("backlog");
-		mileStone.setCreated(new Date());
-		mileStone.setEnded(new Date((new Date().getTime() + 1000 * 60 * 60 * 24
-				* 7)));
-		mileStone.setStatus("active");
-		mileStone.setProject(project);
-		Ebean.save(mileStone);
-		UserProject userProject = new UserProject();
-		userProject.setProject(project);
-		userProject.setUser(user);
-		Ebean.save(userProject);
-		return ok(TracerUtil.successResponse());
+		UserDao userDao = UserDao.getInstance();
+		boolean response = userDao.addProject(projectName, description, visibility, userId);
+		if (response) {
+			return ok(TracerUtil.successResponse());
+		}
+		return ok(TracerUtil.failureResponse());
 	}
 
 	/**
@@ -174,26 +117,21 @@ public class UserController extends Controller {
 			TrackLogger.error(e.getMessage(), className);
 			return ok(TracerUtil.InvalidDataResponse());
 		}
-		Session userSession = Ebean.createQuery(Session.class).where()
-				.eq("sessionId", sessionId).eq("user_id", userId).findUnique();
+		Session userSession = TracerUtil.checkSession(sessionId, userId);
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
 
-		boolean hasUserAccess = TracerUtil
-				.checkUserAccess(userId, "inviteUser");
+		boolean hasUserAccess = TracerUtil.checkUserAccess(userId, "inviteUser");
 		if (!hasUserAccess) {
 			return ok(TracerUtil.InvalidAccessResponse());
 		}
-		Project project = Ebean.createQuery(Project.class).where()
-				.eq("id", projectId).findUnique();
-		User user = Ebean.createQuery(User.class).where()
-				.eq("id", assignUserId).findUnique();
-		UserProject userProject = new UserProject();
-		userProject.setProject(project);
-		userProject.setUser(user);
-		Ebean.save(userProject);
-		return ok(TracerUtil.successResponse());
+		UserDao userDao = UserDao.getInstance();
+		boolean response = userDao.addUserToProject(assignUserId, projectId);
+		if (response) {
+			return ok(TracerUtil.successResponse());
+		}
+		return ok(TracerUtil.failureResponse());
 	}
 
 	/**
@@ -218,26 +156,20 @@ public class UserController extends Controller {
 			TrackLogger.error(e.getMessage(), className);
 			return ok(TracerUtil.InvalidDataResponse());
 		}
-		Session userSession = Ebean.createQuery(Session.class).where()
-				.eq("sessionId", session).eq("user_id", userId).findUnique();
+		Session userSession = TracerUtil.checkSession(session, userId);
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		boolean hasUserAccess = TracerUtil
-				.checkUserAccess(userId, "inviteUser");
+		boolean hasUserAccess = TracerUtil.checkUserAccess(userId, "inviteUser");
 		if (!hasUserAccess) {
 			return ok(TracerUtil.InvalidAccessResponse());
 		}
-		User user = new User();
-		user.setEmail(email);
-		Ebean.save(user);
-		String mailSubject = PropertyReader
-				.readProperty("tracer.invitation.text");
-		mailSubject = mailSubject + "</br>"
-				+ "http://idc.tarento.com:9000/register";
-		String subject = PropertyReader.readProperty("tracer.registration");
-		SendMail.getMailInstance().sendMail(email, mailSubject, subject);
-		return ok(TracerUtil.successResponse());
+		UserDao dao = UserDao.getInstance();
+		boolean response = dao.inviteUser(email);
+		if (response) {
+			return ok(TracerUtil.successResponse());
+		}
+		return ok(TracerUtil.failureResponse());
 	}
 
 	/**
@@ -260,7 +192,7 @@ public class UserController extends Controller {
 			TrackLogger.error(e.getMessage(), className);
 			return ok(TracerUtil.InvalidDataResponse());
 		}
-		User user = new User(); 
+		User user = new User();
 		user.setEmail(email);
 		user.setName(name);
 		user.setPassword(password);
@@ -271,6 +203,7 @@ public class UserController extends Controller {
 
 	/**
 	 * this method will create new mile stone.
+	 * 
 	 * @return
 	 */
 	public static Result createMileStone() {
@@ -292,31 +225,21 @@ public class UserController extends Controller {
 			TrackLogger.error(e.getMessage(), className);
 			return ok(TracerUtil.InvalidDataResponse());
 		}
-		Session userSession = Ebean.createQuery(Session.class).where()
-				.eq("sessionId", sessionId).eq("user_id", userId).findUnique();
+		Session userSession = TracerUtil.checkSession(sessionId, userId);
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
 
-		Project project = Ebean.createQuery(Project.class).where()
-				.eq("id", projectId).findUnique();
+		Project project = Ebean.createQuery(Project.class).where().eq("id", projectId).findUnique();
 		if (project == null) {
 			return ok(TracerUtil.InvalidDataResponse());
 		}
-		MileStone mileStone = new MileStone();
-		Date endedDate = null;
-		try {
-			endedDate = dateFormat.parse(ended);
-		} catch (Exception e) {
-			TrackLogger.error(e.getMessage(), className);
+		UserDao dao = UserDao.getInstance();
+		boolean response = dao.createMileStone(name, status, ended, project);
+		if (response) {
+			return ok(TracerUtil.successResponse());
 		}
-		mileStone.setCreated(new Date());
-		mileStone.setEnded(endedDate);
-		mileStone.setName(name);
-		mileStone.setProject(project);
-		mileStone.setStatus(status);
-		Ebean.save(mileStone);
-		return ok(TracerUtil.successResponse());
+		return ok(TracerUtil.failureResponse());
 	}
 
 }
