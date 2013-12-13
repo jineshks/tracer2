@@ -1,9 +1,7 @@
 package controllers;
 
-import java.util.Date;
 import java.util.List;
 
-import models.Comment;
 import models.Complexity;
 import models.MileStone;
 import models.Phase;
@@ -21,9 +19,9 @@ import util.Constants;
 import util.JsonKey;
 import util.TracerUtil;
 import util.TrackLogger;
+import Dao.TicketDao;
 
 import com.avaje.ebean.Ebean;
-import com.avaje.ebean.Expr;
 
 /**
  * this api will control all ticket related actions.
@@ -45,41 +43,17 @@ public class TicketController extends Controller {
 		if (ticket == null) {
 			return ok(TracerUtil.InvalidDataResponse());
 		}
-		Session userSession = Ebean.createQuery(Session.class).where().eq("sessionId", ticket.getOwner().getPassword())
-		        .eq("user_id", ticket.getCreater().getId()).findUnique();
+		Session userSession = TracerUtil.checkSession(ticket.getOwner().getPassword(), ticket.getCreater().getId());
+
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
 		User user = userSession.getUser();
-		Project project = Ebean.createQuery(Project.class).where().eq("id", ticket.getProject().getId()).findUnique();
-		MileStone mileStone = Ebean.createQuery(MileStone.class).where().eq("id", ticket.getMileStone().getId())
-		        .findUnique();
-		User owner = Ebean.createQuery(User.class).where().eq("id", ticket.getOwner().getId()).findUnique();
-		Severity severity = Ebean.createQuery(Severity.class).where().eq("id", ticket.getSeverity().getId())
-		        .findUnique();
-		Complexity complexity = Ebean.createQuery(Complexity.class).where().eq("id", ticket.getComplexity().getId())
-		        .findUnique();
-		Phase phase = Ebean.createQuery(Phase.class).where().eq("id", ticket.getPhase().getId()).findUnique();
-		if (project == null || user == null || owner == null) {
-			return ok(TracerUtil.InvalidDataResponse());
+		boolean response = TicketDao.instance.createTicket(ticket, user);
+		if (response) {
+			return ok(TracerUtil.successResponse());
 		}
-		ticket.setComplexity(complexity);
-		ticket.setCreated(new Date());
-		ticket.setCreater(user);
-		ticket.setMileStone(mileStone);
-		ticket.setOwner(owner);
-		ticket.setPhase(phase);
-		ticket.setProject(project);
-		ticket.setSeverity(severity);
-		ticket.setUpdated(new Date());
-		Ebean.save(ticket);
-		Comment comment = new Comment();
-		comment.setCreated(new Date());
-		comment.setText(ticket.getDescription());
-		comment.setTicket(ticket);
-		comment.setUser(user);
-		Ebean.save(comment);
-		return ok(TracerUtil.successResponse());
+		return ok(TracerUtil.failureResponse());
 	}
 
 	/**
@@ -105,23 +79,16 @@ public class TicketController extends Controller {
 			return ok(TracerUtil.InvalidDataResponse());
 		}
 
-		Session userSession = Ebean.createQuery(Session.class).where().eq("sessionId", session).eq("user_id", userId)
-		        .findUnique();
+		Session userSession = TracerUtil.checkSession(session, userId);
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
 		User user = userSession.getUser();
-		Ticket ticket = Ebean.createQuery(Ticket.class).where().eq("id", ticketId).findUnique();
-		ticket.setTicketStatus(ticketStatus);
-		ticket.setUpdated(new Date());
-		Ebean.update(ticket);
-		Comment comment = new Comment();
-		comment.setCreated(new Date());
-		comment.setText(description);
-		comment.setTicket(ticket);
-		comment.setUser(user);
-		Ebean.save(comment);
-		return ok(TracerUtil.successResponse());
+		boolean response = TicketDao.instance.updateticket(description, ticketStatus, ticketId, user);
+		if (response) {
+			return ok(TracerUtil.successResponse());
+		}
+		return ok(TracerUtil.failureResponse());
 	}
 
 	/**
@@ -140,14 +107,11 @@ public class TicketController extends Controller {
 			TrackLogger.error(e.getMessage(), className);
 			return ok(TracerUtil.InvalidDataResponse());
 		}
-
-		Session userSession = Ebean.createQuery(Session.class).where().eq("sessionId", session).eq("user_id", userId)
-		        .findUnique();
+		Session userSession = TracerUtil.checkSession(session, userId);
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		List<Ticket> tickets = Ebean.createQuery(Ticket.class)
-		        .where(Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId))).findList();
+		List<Ticket> tickets = TicketDao.instance.getAllTicket(userId);
 		return ok(TracerUtil.successResponse(tickets));
 	}
 
@@ -170,14 +134,11 @@ public class TicketController extends Controller {
 			return ok(TracerUtil.InvalidDataResponse());
 		}
 
-		Session userSession = Ebean.createQuery(Session.class).where().eq("sessionId", session).eq("user_id", userId)
-		        .findUnique();
+		Session userSession = TracerUtil.checkSession(session, userId);
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		List<Ticket> tickets = Ebean.createQuery(Ticket.class)
-		        .where(Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId))).where()
-		        .eq("project_id", projectId).findList();
+		List<Ticket> tickets = TicketDao.instance.getAllTicketByProject(userId, projectId);
 		return ok(TracerUtil.successResponse(tickets));
 	}
 
@@ -205,9 +166,7 @@ public class TicketController extends Controller {
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		List<Ticket> tickets = Ebean.createQuery(Ticket.class)
-		        .where(Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId))).where()
-		        .eq("ticket_status", status).findList();
+		List<Ticket> tickets = TicketDao.instance.getAllTicketByStatus(userId, status);
 		return ok(TracerUtil.successResponse(tickets));
 	}
 
@@ -228,20 +187,15 @@ public class TicketController extends Controller {
 			userId = json.get(JsonKey.USER_ID).asLong();
 			status = json.get(JsonKey.STATUS).asText();
 			projectId = json.get(JsonKey.PROJECT_ID).asLong();
-			status = json.get(JsonKey.STATUS).asText();
 		} catch (Exception e) {
 			TrackLogger.error(e.getMessage(), className);
 			return ok(TracerUtil.InvalidDataResponse());
 		}
-		Session userSession = Ebean.createQuery(Session.class).where().eq("sessionId", session).eq("user_id", userId)
-		        .findUnique();
+		Session userSession = TracerUtil.checkSession(session, userId);
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-
-		List<Ticket> tickets = Ebean.createQuery(Ticket.class)
-		        .where(Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId))).where()
-		        .eq("ticket_status", status).eq("project_id", projectId).findList();
+		List<Ticket> tickets = TicketDao.instance.getAllTicketByProjectAndStatus(userId, status, projectId);
 		return ok(TracerUtil.successResponse(tickets));
 	}
 
@@ -264,14 +218,11 @@ public class TicketController extends Controller {
 			TrackLogger.error(e.getMessage(), className);
 			return ok(TracerUtil.InvalidDataResponse());
 		}
-		Session userSession = Ebean.createQuery(Session.class).where().eq("sessionId", session).eq("user_id", userId)
-		        .findUnique();
+		Session userSession = TracerUtil.checkSession(session, userId);
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		List<Ticket> tickets = Ebean.createQuery(Ticket.class)
-		        .where(Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId))).where()
-		        .eq("mile_stone_id", mileStoneId).findList();
+		List<Ticket> tickets = TicketDao.instance.getAllTicketByMileStone(userId, mileStoneId);
 		return ok(TracerUtil.successResponse(tickets));
 	}
 
@@ -294,16 +245,13 @@ public class TicketController extends Controller {
 			status = json.get(JsonKey.STATUS).asText();
 		} catch (Exception e) {
 			TrackLogger.error(e.getMessage(), className);
-			// return ok(TracerUtil.InvalidDataResponse());
+			return ok(TracerUtil.InvalidDataResponse());
 		}
-		Session userSession = Ebean.createQuery(Session.class).where().eq("sessionId", session).eq("user_id", userId)
-		        .findUnique();
+		Session userSession = TracerUtil.checkSession(session, userId);
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		List<Ticket> tickets = Ebean.createQuery(Ticket.class).fetch("mileStone")
-		        .where(Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId))).where()
-		        .eq("mile_stone_id", mileStoneId).eq("mile_stone_status", status).findList();
+		List<Ticket> tickets = TicketDao.instance.getAllTicketByMileStoneAndStatus(userId, mileStoneId, status);
 		return ok(TracerUtil.successResponse(tickets));
 	}
 

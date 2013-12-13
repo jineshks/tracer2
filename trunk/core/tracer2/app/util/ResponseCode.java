@@ -44,11 +44,7 @@ BADREQUEST(Constants.BAD_REQUEST_ID,Constants.BAD_REQUEST),
 /**
  * RoleAccessNotFound
  */
-RoleAccessNotFound(Constants.ROLE_AUTHORIZATION_FAILED_ID,Constants.AUTHORIZATION_FAILED),
-/**
- *changePassword 
- */
-changePassword(Constants.CHANGE_PASSWORD_ID,Constants.CHANGE_PASSWORD_SUCCESS);
+RoleAccessNotFound(Constants.ROLE_AUTHORIZATION_FAILED_ID,Constants.AUTHORIZATION_FAILED);
 
     /**
      * error code contains int value
