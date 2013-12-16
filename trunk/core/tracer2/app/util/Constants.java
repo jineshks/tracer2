@@ -56,4 +56,12 @@ public class Constants {
     public static final int ROLE_AUTHORIZATION_FAILED_ID = 335;
     public static final int BAD_REQUEST_ID = 400;
     public static final String SERVER_URL = "http://idc.tarento.com:9000/register";
+    
+    
+    public static void main(String[] args) {
+	   TicketStatus ticketStatus []  = TicketStatus.values();
+	   for (int i = 0; i< ticketStatus.length ;i++) {
+		   System.out.println(ticketStatus[i].name());
+	   }
+    }
 }
