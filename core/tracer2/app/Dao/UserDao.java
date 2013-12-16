@@ -9,18 +9,24 @@ import java.util.Date;
 import java.util.List;
 
 import responseBean.LoginResponseData;
+import responseBean.MasterDataBean;
 
 import util.Constants;
 import util.PropertyReader;
 import util.SendMail;
 import util.TracerUtil;
 import util.TrackLogger;
+import util.Constants.TicketStatus;
 
 import com.avaje.ebean.Ebean;
 
+import models.Complexity;
 import models.MileStone;
+import models.Phase;
 import models.Project;
 import models.Session;
+import models.Severity;
+import models.Type;
 import models.User;
 import models.UserProject;
 import models.Visibility;
@@ -242,5 +248,40 @@ public final class UserDao implements Cloneable {
 		}
 		return response;
 	}
-
+	
+	/**
+	 * this method will provide master data means 
+	 * current mile stone, all Severity Label,Complexity
+	 * type ,State etc.
+	 * @param projectId
+	 * @return
+	 */
+	public MasterDataBean getMasterData(long projectId) {
+		MasterDataBean masterDataBean = null;
+		try {
+			MileStone mileStone = Ebean.createQuery(MileStone.class).where().eq("project_id", projectId)
+			        .eq("status", Constants.mileStoneSatus.active.toString()).findUnique();
+			List<Complexity> complexities = Ebean.createQuery(Complexity.class).findList();
+			List<Severity> severities = Ebean.createQuery(Severity.class).findList();
+			List<Phase> phase = Ebean.createQuery(Phase.class).findList();
+			List<Type> types = Ebean.createQuery(Type.class).findList();
+			List<String> status = new ArrayList<String>();
+			TicketStatus ticketStatus[] = TicketStatus.values();
+			for (int i = 0; i < ticketStatus.length; i++) {
+				status.add(ticketStatus[i].name());
+			}
+			masterDataBean = new MasterDataBean();
+			masterDataBean.setComplexities(complexities);
+			masterDataBean.setMileStone(mileStone);
+			masterDataBean.setPhases(phase);
+			masterDataBean.setSeverity(severities);
+			masterDataBean.setTypes(types);
+			masterDataBean.setTicketStatus(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			TrackLogger.error(e.getMessage(), className);
+		}
+		return masterDataBean;
+	}
+	
 }

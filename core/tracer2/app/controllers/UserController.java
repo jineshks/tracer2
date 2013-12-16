@@ -11,6 +11,7 @@ import org.codehaus.jackson.JsonNode;
 import play.mvc.Controller;
 import play.mvc.Result;
 import responseBean.LoginResponseData;
+import responseBean.MasterDataBean;
 import service.UserService;
 import util.JsonKey;
 import util.TracerUtil;
@@ -242,4 +243,37 @@ public class UserController extends Controller {
 		return ok(TracerUtil.failureResponse());
 	}
 
+	/**
+	*this api will provide current mileStone based 
+	*on project id,other information like severity , 
+	*complexity,phase,ticket type
+	 * 
+	 * @return
+	 */
+	public static Result provideMasterData() {
+		String sessionId = null;
+		int projectId = 1;
+		long userId;
+		JsonNode json = request().body().asJson();
+		try {
+			sessionId = json.get(JsonKey.SESSION).asText();
+			projectId = json.get(JsonKey.PROJECT_ID).asInt();
+			userId = json.get(JsonKey.USER_ID).asLong();
+		} catch (Exception e) {
+			TrackLogger.error(e.getMessage(), className);
+			return ok(TracerUtil.InvalidDataResponse());
+		}
+		Session userSession = TracerUtil.checkSession(sessionId, userId);
+		if (userSession == null) {
+			return ok(TracerUtil.invalidSessionResponse());
+		}
+
+		UserDao dao = UserDao.getInstance();
+		MasterDataBean masterDataBean = dao.getMasterData(projectId);
+		if (masterDataBean != null) {
+			return ok(TracerUtil.successResponse(masterDataBean));
+		}
+		return ok(TracerUtil.failureResponse());
+	}
+	
 }
