@@ -284,4 +284,19 @@ public final class UserDao implements Cloneable {
 		return masterDataBean;
 	}
 	
+	/**
+	 * this method will provide list of usrs.
+	 * @param userId
+	 * @return
+	 */
+	public List<User> getallUser(long userId) {
+		List<User> users = null;
+		try {
+			users = Ebean.createQuery(User.class).select("name,id").where().ne("id", userId).findList();
+		} catch (Exception e) {
+			e.printStackTrace();
+			TrackLogger.error(e.getMessage(), className);
+		}
+		return users;
+	}
 }

@@ -1,6 +1,7 @@
 package controllers;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import models.Project;
 import models.Session;
@@ -274,6 +275,34 @@ public class UserController extends Controller {
 			return ok(TracerUtil.successResponse(masterDataBean));
 		}
 		return ok(TracerUtil.failureResponse());
-	}
+	}  
+
+	/**
+	*this api will provide all user details.
+	 * @return
+	 */
+	public static Result getUserDetails() {
+		String sessionId = null;
+		long userId = 1l;
+		JsonNode json = request().body().asJson();
+		try {
+			sessionId = json.get(JsonKey.SESSION).asText();
+			userId = json.get(JsonKey.USER_ID).asLong();
+		} catch (Exception e) {
+			TrackLogger.error(e.getMessage(), className);
+			return ok(TracerUtil.InvalidDataResponse());
+		}
+		Session userSession = TracerUtil.checkSession(sessionId, userId);
+		if (userSession == null) {
+			return ok(TracerUtil.invalidSessionResponse());
+		}
+		UserDao dao = UserDao.getInstance();
+		List<User> users = dao.getallUser(userId);
+		if (users != null) {
+			return ok(TracerUtil.successResponse(users));
+		}
+		return ok(TracerUtil.failureResponse());
+	} 
+	
 	
 }
