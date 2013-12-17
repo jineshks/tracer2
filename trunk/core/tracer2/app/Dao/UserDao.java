@@ -292,7 +292,7 @@ public final class UserDao implements Cloneable {
 	public List<User> getallUser(long userId) {
 		List<User> users = null;
 		try {
-			users = Ebean.createQuery(User.class).select("name,id").where().ne("id", userId).findList();
+			users = Ebean.createQuery(User.class).where().ne("id", userId).findList();
 		} catch (Exception e) {
 			e.printStackTrace();
 			TrackLogger.error(e.getMessage(), className);
