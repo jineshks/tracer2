@@ -12,6 +12,7 @@ import responseBean.LoginResponseData;
 import responseBean.MasterDataBean;
 
 import util.Constants;
+import util.DataMasking;
 import util.PropertyReader;
 import util.SendMail;
 import util.TracerUtil;
@@ -193,11 +194,11 @@ public final class UserDao implements Cloneable {
 	public boolean inviteUser(final String email) {
 		boolean response = true;
 		try {
-			User user = new User();
-			user.setEmail(email);
-			Ebean.save(user);
+		//	User user = new User();
+		//	user.setEmail(email);
+		//	Ebean.save(user);
 			final String mailSubject = PropertyReader.readProperty("tracer.invitation.text") + "</br>"
-			        + Constants.SERVER_URL;
+			        + Constants.SERVER_URL+"?"+DataMasking.encrypt(email, Constants.SALT);
 			final String subject = PropertyReader.readProperty("tracer.registration");
 			new Thread(new Runnable() {
 				@Override
@@ -259,8 +260,14 @@ public final class UserDao implements Cloneable {
 	public MasterDataBean getMasterData(long projectId) {
 		MasterDataBean masterDataBean = null;
 		try {
-			MileStone mileStone = Ebean.createQuery(MileStone.class).where().eq("project_id", projectId)
-			        .eq("status", Constants.mileStoneSatus.active.toString()).findUnique();
+			//here we will check if projectId is zero then send all mile stone 
+			//other wise send only those mile stone which is related to that project only.
+			List<MileStone> mileStone = null;
+			if(projectId==0) {
+			 mileStone = Ebean.createQuery(MileStone.class).findList();
+			} else {
+				mileStone = Ebean.createQuery(MileStone.class).where().eq("project_id", projectId).findList();
+			}
 			List<Complexity> complexities = Ebean.createQuery(Complexity.class).findList();
 			List<Severity> severities = Ebean.createQuery(Severity.class).findList();
 			List<Phase> phase = Ebean.createQuery(Phase.class).findList();
@@ -285,7 +292,7 @@ public final class UserDao implements Cloneable {
 	}
 	
 	/**
-	 * this method will provide list of usrs.
+	 * this method will provide list of users.
 	 * @param userId
 	 * @return
 	 */
@@ -298,5 +305,23 @@ public final class UserDao implements Cloneable {
 			TrackLogger.error(e.getMessage(), className);
 		}
 		return users;
+	}
+	
+	/**
+	 * this method will check any mile stone with this project 
+	 * is active or not.
+	 * @param projectId
+	 * @return
+	 */
+	public boolean isMileStoneActive(long projectId) {
+		boolean response = false;
+		List<MileStone> mileStones = Ebean.createQuery(MileStone.class).where().eq("project_id", projectId).findList();
+		for (int i = 0; i < mileStones.size(); i++) {
+			if (Constants.mileStoneSatus.active.toString().equalsIgnoreCase(mileStones.get(i).getStatus())) {
+				response = true;
+				break;
+			}
+		}
+		return response;
 	}
 }

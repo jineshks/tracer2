@@ -173,4 +173,24 @@ public enum TicketDao {
 		        .where(Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId))).where()
 		        .eq("mile_stone_id", mileStoneId).eq("mile_stone_status", status).findList();
 	}
+	
+	/**
+	 * this method is used to update the mile stone status.
+	 * @param status String (active,pending,backlog etc)
+	 * @param mileStoneId  long
+	 * @return  boolean
+	 */
+	public boolean updateMileStone(String status, long mileStoneId) {
+		boolean response = true;
+		try {
+			MileStone mileStone = Ebean.createQuery(MileStone.class).where().eq("id", mileStoneId).findUnique();
+			mileStone.setStatus(status);
+			Ebean.update(mileStone);
+		} catch (Exception e) {
+			TrackLogger.error(e.getMessage(), className);
+			response = false;
+		}
+		return response;
+	}
+	
 }

@@ -255,6 +255,44 @@ public class TicketController extends Controller {
 		return ok(TracerUtil.successResponse(tickets));
 	}
 
+	
+	
+	/**
+	 * this method will return all tickets of a particular project based on
+	 * ticket status
+	 * 
+	 * @return
+	 */
+	public static Result updateMileStone() {
+		JsonNode json = request().body().asJson();
+		long userId = 0;
+		String session = null;
+		long mileStoneId = 0L;
+		String status = null;
+		try {
+			session = json.get(JsonKey.SESSION).asText();
+			userId = json.get(JsonKey.USER_ID).asLong();
+			mileStoneId = json.get(JsonKey.MILE_STONE_ID).asLong();
+			status = json.get(JsonKey.STATUS).asText();
+		} catch (Exception e) {
+			TrackLogger.error(e.getMessage(), className);
+			return ok(TracerUtil.InvalidDataResponse());
+		}
+		Session userSession = TracerUtil.checkSession(session, userId);
+		if (userSession == null) {
+			return ok(TracerUtil.invalidSessionResponse());
+		}
+		boolean updateStatus = TicketDao.instance.updateMileStone(status, mileStoneId);
+		if (updateStatus) {
+			return ok(TracerUtil.successResponse());
+		}
+		return ok(TracerUtil.failureResponse());
+	}
+
+	
+	
+	
+	
 	/**
 	 * this method is used to parse user requested data to ticket object.
 	 * 
