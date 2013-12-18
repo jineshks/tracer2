@@ -3,7 +3,6 @@
  */
 package models;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -11,7 +10,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-
 
 import play.data.format.Formats;
 import play.db.ebean.Model;
@@ -43,10 +41,6 @@ public class MileStone extends Model {
 	    public Date ended;
 	    @ManyToOne
 	    public Project project ;
-	    
-	    @Formats.DateTime(pattern="yyyy-MM-dd HH:mm:ss")
-	    @Column(insertable = false,updatable=false)
-	    Timestamp updatedTime;
 
 	    public static Model.Finder<Long,MileStone> find = new Model.Finder<Long,MileStone>(Long.class, MileStone.class);
 
@@ -133,19 +127,4 @@ public class MileStone extends Model {
 		public void setProject(Project project) {
 			this.project = project;
 		}
-
-		/**
-		 * @return the updatedTime
-		 */
-		public Timestamp getUpdatedTime() {
-			return updatedTime;
-		}
-
-		/**
-		 * @param updatedTime the updatedTime to set
-		 */
-		public void setUpdatedTime(Timestamp updatedTime) {
-			this.updatedTime = updatedTime;
-		}
-		
 }
