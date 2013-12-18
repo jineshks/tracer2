@@ -3,6 +3,7 @@
  */
 package models;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -11,7 +12,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-import com.sun.jmx.snmp.Timestamp;
 
 import play.data.format.Formats;
 import play.db.ebean.Model;
