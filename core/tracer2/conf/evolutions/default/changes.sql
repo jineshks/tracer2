@@ -1,0 +1,2 @@
+ALTER TABLE `trace`.`mile_stone` ADD COLUMN `updatedTime` TIMESTAMP NULL AFTER `project_id`; 
+ALTER TABLE `trace`.`mile_stone` CHANGE `updatedTime` `updatedTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NULL;

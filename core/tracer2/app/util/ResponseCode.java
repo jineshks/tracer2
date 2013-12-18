@@ -44,7 +44,11 @@ BADREQUEST(Constants.BAD_REQUEST_ID,Constants.BAD_REQUEST),
 /**
  * RoleAccessNotFound
  */
-RoleAccessNotFound(Constants.ROLE_AUTHORIZATION_FAILED_ID,Constants.AUTHORIZATION_FAILED);
+RoleAccessNotFound(Constants.ROLE_AUTHORIZATION_FAILED_ID,Constants.AUTHORIZATION_FAILED),
+/**
+ * ActiveMileStone
+ */
+ActiveMileStone(Constants.ACTIVE_MILE_STONE,Constants.ACTIVE_MILE_STONE_MSG);
 
     /**
      * error code contains int value

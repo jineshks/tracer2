@@ -19,7 +19,7 @@ public class MasterDataBean {
 	List<Type>  types = null;
 	List<Phase> phases = null;
 	List<Complexity> complexities = null;
-	MileStone  mileStone = null;
+	List<MileStone>  mileStone = null;
 	List<String> ticketStatus = null;
 	/**
 	 * @return the severity
@@ -70,18 +70,6 @@ public class MasterDataBean {
 		this.complexities = complexities;
 	}
 	/**
-	 * @return the mileStone
-	 */
-	public MileStone getMileStone() {
-		return mileStone;
-	}
-	/**
-	 * @param mileStone the mileStone to set
-	 */
-	public void setMileStone(MileStone mileStone) {
-		this.mileStone = mileStone;
-	}
-	/**
 	 * @return the ticketStatus
 	 */
 	public List<String> getTicketStatus() {
@@ -93,4 +81,17 @@ public class MasterDataBean {
 	public void setTicketStatus(List<String> ticketStatus) {
 		this.ticketStatus = ticketStatus;
 	}
+	/**
+	 * @return the mileStone
+	 */
+	public List<MileStone> getMileStone() {
+		return mileStone;
+	}
+	/**
+	 * @param mileStone the mileStone to set
+	 */
+	public void setMileStone(List<MileStone> mileStone) {
+		this.mileStone = mileStone;
+	}
+	
 }

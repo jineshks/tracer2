@@ -183,6 +183,25 @@ public class TracerUtil {
 				ResponseCode.UnAuthorised.getErrorMessage());
 		return response;
 	}
+	
+	/**
+	 * this method will crate failure response and send to 
+	 * controller.
+	 * 
+	 * @return ObjectNode object.
+	 */
+	public static ObjectNode ActiveMileStone() {
+		ObjectNode response = Json.newObject();
+		response.put(JsonKey.STATUS_CODE,
+				ResponseCode.ActiveMileStone.getErrorCode());
+		response.put(JsonKey.STATUS_MESSAGE,
+				ResponseCode.FAILURE.getErrorMessage());
+		response.put(JsonKey.ERROR_MESSAGE,
+				ResponseCode.ActiveMileStone.getErrorMessage());
+		TrackLogger.debug("sending data===>"+response, className);
+		return response;
+	}
+	
 	/**
 	 * this method is used to check user have access 
 	 * of particular action or not

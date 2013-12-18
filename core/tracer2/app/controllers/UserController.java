@@ -14,6 +14,7 @@ import play.mvc.Result;
 import responseBean.LoginResponseData;
 import responseBean.MasterDataBean;
 import service.UserService;
+import util.Constants;
 import util.JsonKey;
 import util.TracerUtil;
 import util.TrackLogger;
@@ -237,6 +238,13 @@ public class UserController extends Controller {
 			return ok(TracerUtil.InvalidDataResponse());
 		}
 		UserDao dao = UserDao.getInstance();
+		if (Constants.mileStoneSatus.active.toString().equalsIgnoreCase(status)) {
+			boolean isActive = dao.isMileStoneActive(projectId);
+			if (isActive) {
+				return ok(TracerUtil.ActiveMileStone());
+			}
+		}
+
 		boolean response = dao.createMileStone(name, status, ended, project);
 		if (response) {
 			return ok(TracerUtil.successResponse());
@@ -253,7 +261,7 @@ public class UserController extends Controller {
 	 */
 	public static Result provideMasterData() {
 		String sessionId = null;
-		int projectId = 1;
+		int projectId = 0;
 		long userId;
 		JsonNode json = request().body().asJson();
 		try {
@@ -283,7 +291,7 @@ public class UserController extends Controller {
 	 */
 	public static Result getUserDetails() {
 		String sessionId = null;
-		long userId = 1l;
+		long userId = 0l;
 		JsonNode json = request().body().asJson();
 		try {
 			sessionId = json.get(JsonKey.SESSION).asText();
@@ -303,6 +311,5 @@ public class UserController extends Controller {
 		}
 		return ok(TracerUtil.failureResponse());
 	} 
-	
 	
 }

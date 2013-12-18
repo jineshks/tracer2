@@ -12,7 +12,7 @@ public class Constants {
 	/*
 	 * 
 	 */
-    public static final String SALT = "a is salt simple clear this";
+    public static final String SALT = "tracer util data encrypt";
     public static final String SUCCESS_MESSAGE = "success";
     public static final String FAILURE_MSG = "failure";
     public static final String TRUE = "true";
@@ -56,6 +56,8 @@ public class Constants {
     public static final int ROLE_AUTHORIZATION_FAILED_ID = 335;
     public static final int BAD_REQUEST_ID = 400;
     public static final String SERVER_URL = "http://idc.tarento.com:9000/register";
+    public static final int ACTIVE_MILE_STONE = 302;
+    public static final String ACTIVE_MILE_STONE_MSG = "You already have a active milestone.";
     
     
     public static void main(String[] args) {
