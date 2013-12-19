@@ -178,13 +178,15 @@ public enum TicketDao {
 	 * this method is used to update the mile stone status.
 	 * @param status String (active,pending,backlog etc)
 	 * @param mileStoneId  long
+	 * @param name name of milestone
 	 * @return  boolean
 	 */
-	public boolean updateMileStone(String status, long mileStoneId) {
+	public boolean updateMileStone(String status, long mileStoneId,String name) {
 		boolean response = true;
 		try {
 			MileStone mileStone = Ebean.createQuery(MileStone.class).where().eq("id", mileStoneId).findUnique();
 			mileStone.setStatus(status);
+			mileStone.setName(name);
 			Ebean.update(mileStone);
 		} catch (Exception e) {
 			TrackLogger.error(e.getMessage(), className);

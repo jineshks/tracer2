@@ -269,11 +269,13 @@ public class TicketController extends Controller {
 		String session = null;
 		long mileStoneId = 0L;
 		String status = null;
+		String name = null;
 		try {
 			session = json.get(JsonKey.SESSION).asText();
 			userId = json.get(JsonKey.USER_ID).asLong();
 			mileStoneId = json.get(JsonKey.MILE_STONE_ID).asLong();
 			status = json.get(JsonKey.STATUS).asText();
+			name = json.get(JsonKey.NAME).asText();
 		} catch (Exception e) {
 			TrackLogger.error(e.getMessage(), className);
 			return ok(TracerUtil.InvalidDataResponse());
@@ -282,7 +284,7 @@ public class TicketController extends Controller {
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		boolean updateStatus = TicketDao.instance.updateMileStone(status, mileStoneId);
+		boolean updateStatus = TicketDao.instance.updateMileStone(status, mileStoneId,name);
 		if (updateStatus) {
 			return ok(TracerUtil.successResponse());
 		}
