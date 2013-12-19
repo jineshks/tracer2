@@ -233,7 +233,7 @@ public final class UserDao implements Cloneable {
 			MileStone mileStone = new MileStone();
 			Date endedDate = null;
 			try {
-				endedDate = dateFormat.parse(endDate);
+				endedDate = dateFormat.parse(endDate+" 00:00:00");
 			} catch (Exception e) {
 				TrackLogger.error(e.getMessage(), className);
 			}
