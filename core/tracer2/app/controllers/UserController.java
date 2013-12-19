@@ -35,7 +35,7 @@ public class UserController extends Controller {
 	/**
 	 * this method is used to user login.
 	 * 
-	 * @return
+	 * @return  Result
 	 */
 	public static Result login() {
 		JsonNode json = request().body().asJson();
@@ -64,7 +64,7 @@ public class UserController extends Controller {
 	/**
 	 * this method is used to add a new project.
 	 * 
-	 * @return
+	 * @return Result
 	 */
 	public static Result addProject() {
 		JsonNode json = request().body().asJson();
@@ -103,7 +103,7 @@ public class UserController extends Controller {
 	/**
 	 * this method is used to add user in a project.
 	 * 
-	 * @return
+	 * @return Result
 	 */
 	public static Result addUserToProject() {
 		JsonNode json = request().body().asJson();
@@ -141,7 +141,7 @@ public class UserController extends Controller {
 	 * this method is called when admin invite user , that user will get link to
 	 * complete registration.
 	 * 
-	 * @return
+	 * @return Result
 	 */
 	public static Result inviteUser() {
 		String email = null;
@@ -178,7 +178,7 @@ public class UserController extends Controller {
 	/**
 	 * this method is used to register new user .
 	 * 
-	 * @return
+	 * @return Result
 	 */
 	public static Result registration() {
 		String name = null;
@@ -207,7 +207,7 @@ public class UserController extends Controller {
 	/**
 	 * this method will create new mile stone.
 	 * 
-	 * @return
+	 * @return Result
 	 */
 	public static Result createMileStone() {
 		String name = null;
@@ -257,7 +257,7 @@ public class UserController extends Controller {
 	*on project id,other information like severity , 
 	*complexity,phase,ticket type
 	 * 
-	 * @return
+	 * @return Result
 	 */
 	public static Result provideMasterData() {
 		String sessionId = null;
@@ -287,7 +287,7 @@ public class UserController extends Controller {
 
 	/**
 	*this api will provide all user details.
-	 * @return
+	 * @return Result
 	 */
 	public static Result getUserDetails() {
 		String sessionId = null;
