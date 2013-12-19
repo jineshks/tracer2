@@ -18,19 +18,23 @@ import util.TrackLogger;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Expr;
+import com.avaje.ebean.Expression;
 
 /**
  * @author Manzarul.Haque
- *
+ * 
  */
 public enum TicketDao {
 	instance;
 	private static final String className = TicketDao.class.getName();
-	 
+
 	/**
 	 * this method is for creating new ticket.
-	 * @param ticket Ticket object
-	 * @param user User object
+	 * 
+	 * @param ticket
+	 *            Ticket object
+	 * @param user
+	 *            User object
 	 * @return
 	 */
 	public boolean createTicket(Ticket ticket, User user) {
@@ -69,14 +73,19 @@ public enum TicketDao {
 		}
 		return response;
 	}
-	
+
 	/**
 	 * this method will update an existing ticket.
-	 * @param description String description.
-	 * @param ticketStatus String ticket status
-	 * @param ticketId     long ticket id.
-	 * @param user     	User object.
-	 * @return            true/false
+	 * 
+	 * @param description
+	 *            String description.
+	 * @param ticketStatus
+	 *            String ticket status
+	 * @param ticketId
+	 *            long ticket id.
+	 * @param user
+	 *            User object.
+	 * @return true/false
 	 */
 	public boolean updateticket(String description, String ticketStatus, long ticketId, User user) {
 		boolean response = true;
@@ -97,91 +106,108 @@ public enum TicketDao {
 		}
 		return response;
 	}
-	
+
 	/**
 	 * this method will provide all ticket , assign to that user.
-	 * @param userId long user id.
-	 * @return  List<Ticket>
+	 * 
+	 * @param userId
+	 *            long user id.
+	 * @return List<Ticket>
 	 */
 	public List<Ticket> getAllTicket(long userId) {
 		return Ebean.createQuery(Ticket.class)
 		        .where(Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId))).findList();
 	}
-	
-	
 
 	/**
 	 * this method will provide all ticket based on project assign to that user.
-	 * @param userId long user id.
-	 * @param projectId  project id.
-	 * @return  List<Ticket>
+	 * 
+	 * @param userId
+	 *            long user id.
+	 * @param projectId
+	 *            project id.
+	 * @return List<Ticket>
 	 */
-	public List<Ticket> getAllTicketByProject(long userId,long projectId) {
-		return  Ebean.createQuery(Ticket.class)
-		        .where(Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId))).where()
-		        .eq("project_id", projectId).findList();
+	public List<Ticket> getAllTicketByProject(long userId, long projectId) {
+		Expression checkForCreater = Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId));
+		return Ebean.createQuery(Ticket.class).where().eq("project_id", projectId).add(checkForCreater).findList();
 	}
-	
+
 	/**
-	 * this method will provide all ticket based on project,status  assign to that user.
-	 * @param userId long user id.
-	 * @param status  ticket status (open, closed, active, pending)
-	 * @return  List<Ticket>
+	 * this method will provide all ticket based on project,status assign to
+	 * that user.
+	 * 
+	 * @param userId
+	 *            long user id.
+	 * @param status
+	 *            ticket status (open, closed, active, pending)
+	 * @return List<Ticket>
 	 */
 	public List<Ticket> getAllTicketByStatus(long userId, String status) {
-		return Ebean.createQuery(Ticket.class)
-		        .where(Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId))).where()
-		        .eq("ticket_status", status).findList();
+		Expression checkForCreater = Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId));
+		return Ebean.createQuery(Ticket.class).where().eq("ticket_status", status).add(checkForCreater).findList();
 	}
-	
+
 	/**
-	 * this method will provide all ticket based on project,status  assign to that user.
-	 * @param userId long user id.
-	 * @param status  ticket status (open, closed, active, pending)
-	 * @param projectId long project id
-	 * @return  List<Ticket>
+	 * this method will provide all ticket based on project,status assign to
+	 * that user.
+	 * 
+	 * @param userId
+	 *            long user id.
+	 * @param status
+	 *            ticket status (open, closed, active, pending)
+	 * @param projectId
+	 *            long project id
+	 * @return List<Ticket>
 	 */
-	public List<Ticket> getAllTicketByProjectAndStatus(long userId, String status,long projectId) {
-		return Ebean.createQuery(Ticket.class)
-		        .where(Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId))).where()
-		        .eq("ticket_status", status).eq("project_id", projectId).findList();
+	public List<Ticket> getAllTicketByProjectAndStatus(long userId, String status, long projectId) {
+		Expression checkForCreater = Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId));
+		return Ebean.createQuery(Ticket.class).where().eq("ticket_status", status).eq("project_id", projectId)
+		        .add(checkForCreater).findList();
 	}
-	
+
 	/**
-	 * this method will provide all ticket based on mile stone  assign to that user.
-	 * @param userId long user id.
+	 * this method will provide all ticket based on mile stone assign to that
+	 * user.
+	 * 
+	 * @param userId
+	 *            long user id.
 	 * @param mileStoneId
-      * @return  List<Ticket>
+	 * @return List<Ticket>
 	 */
 	public List<Ticket> getAllTicketByMileStone(long userId, long mileStoneId) {
-		return Ebean.createQuery(Ticket.class)
-		        .where(Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId))).where()
-		        .eq("mile_stone_id", mileStoneId).findList();
+		Expression checkForCreater = Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId));
+		return Ebean.createQuery(Ticket.class).where().eq("mile_stone_id", mileStoneId).add(checkForCreater).findList();
 	}
-	
-	
-	
+
 	/**
-	 * this method will provide all ticket based on mile stone and milestone status  assign to that user.
-	 * @param userId long user id.
+	 * this method will provide all ticket based on mile stone and milestone
+	 * status assign to that user.
+	 * 
+	 * @param userId
+	 *            long user id.
 	 * @param mileStoneId
 	 * @param status
-      * @return  List<Ticket>
+	 * @return List<Ticket>
 	 */
 	public List<Ticket> getAllTicketByMileStoneAndStatus(long userId, long mileStoneId, String status) {
-		return Ebean.createQuery(Ticket.class).fetch("mileStone")
-		        .where(Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId))).where()
-		        .eq("mile_stone_id", mileStoneId).eq("mile_stone_status", status).findList();
+		Expression checkForCreater = Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId));
+		return Ebean.createQuery(Ticket.class).fetch("mileStone").where().eq("mile_stone_id", mileStoneId)
+		        .eq("mile_stone_status", status).add(checkForCreater).findList();
 	}
-	
+
 	/**
 	 * this method is used to update the mile stone status.
-	 * @param status String (active,pending,backlog etc)
-	 * @param mileStoneId  long
-	 * @param name name of milestone
-	 * @return  boolean
+	 * 
+	 * @param status
+	 *            String (active,pending,backlog etc)
+	 * @param mileStoneId
+	 *            long
+	 * @param name
+	 *            name of milestone
+	 * @return boolean
 	 */
-	public boolean updateMileStone(String status, long mileStoneId,String name) {
+	public boolean updateMileStone(String status, long mileStoneId, String name) {
 		boolean response = true;
 		try {
 			MileStone mileStone = Ebean.createQuery(MileStone.class).where().eq("id", mileStoneId).findUnique();
@@ -194,29 +220,36 @@ public enum TicketDao {
 		}
 		return response;
 	}
-	
+
 	/**
 	 * this method will provide all ticket based on mile stone and project .
-	 * @param projectId int .
-	 * @param mileStoneId long
-      * @return  List<Ticket>
+	 * 
+	 * @param projectId
+	 *            int .
+	 * @param mileStoneId
+	 *            long
+	 * @return List<Ticket>
 	 */
 	public List<Ticket> getAllTicketByProjectAndMileStone(int projectId, long mileStoneId) {
 		return Ebean.createQuery(Ticket.class).fetch("mileStone").where().eq("mile_stone_id", mileStoneId)
 		        .eq("id", projectId).findList();
 	}
-   
+
 	/**
-	 * this method will provide all ticket based on mile stone,project and ticket status.
-	 * @param projectId int .
-	 * @param mileStoneId long
-	 * @param status String
-      * @return  List<Ticket>
+	 * this method will provide all ticket based on mile stone,project and
+	 * ticket status.
+	 * 
+	 * @param projectId
+	 *            int .
+	 * @param mileStoneId
+	 *            long
+	 * @param status
+	 *            String
+	 * @return List<Ticket>
 	 */
 	public List<Ticket> getAllTicketByProjectAndMileStoneAndStatus(int projectId, long mileStoneId, String status) {
 		return Ebean.createQuery(Ticket.class).fetch("mileStone").where().eq("mile_stone_id", mileStoneId)
 		        .eq("id", projectId).eq("ticket_status", status).findList();
 	}
-	
-	
+
 }
