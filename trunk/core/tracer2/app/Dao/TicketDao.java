@@ -193,4 +193,28 @@ public enum TicketDao {
 		return response;
 	}
 	
+	/**
+	 * this method will provide all ticket based on mile stone and project .
+	 * @param projectId int .
+	 * @param mileStoneId long
+      * @return  List<Ticket>
+	 */
+	public List<Ticket> getAllTicketByProjectAndMileStone(int projectId, long mileStoneId) {
+		return Ebean.createQuery(Ticket.class).fetch("mileStone").where().eq("mile_stone_id", mileStoneId)
+		        .eq("id", projectId).findList();
+	}
+   
+	/**
+	 * this method will provide all ticket based on mile stone,project and ticket status.
+	 * @param projectId int .
+	 * @param mileStoneId long
+	 * @param status String
+      * @return  List<Ticket>
+	 */
+	public List<Ticket> getAllTicketByProjectAndMileStoneAndStatus(int projectId, long mileStoneId, String status) {
+		return Ebean.createQuery(Ticket.class).fetch("mileStone").where().eq("mile_stone_id", mileStoneId)
+		        .eq("id", projectId).eq("ticket_status", status).findList();
+	}
+	
+	
 }

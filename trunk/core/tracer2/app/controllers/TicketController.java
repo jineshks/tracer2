@@ -15,6 +15,7 @@ import org.codehaus.jackson.JsonNode;
 
 import play.mvc.Controller;
 import play.mvc.Result;
+import service.TicketService;
 import util.Constants;
 import util.JsonKey;
 import util.TracerUtil;
@@ -35,7 +36,7 @@ public class TicketController extends Controller {
 	/**
 	 * this method will create new tickets.
 	 * 
-	 * @return
+	 * @return Result
 	 */
 	public static Result createTickets() {
 		JsonNode json = request().body().asJson();
@@ -59,7 +60,7 @@ public class TicketController extends Controller {
 	/**
 	 * this method will update tickets.
 	 * 
-	 * @return
+	 * @return Result
 	 */
 	public static Result updateTickets() {
 		JsonNode json = request().body().asJson();
@@ -94,7 +95,7 @@ public class TicketController extends Controller {
 	/**
 	 * this method will return all tickets of a particular user
 	 * 
-	 * @return
+	 * @return Result
 	 */
 	public static Result getAllTickets() {
 		JsonNode json = request().body().asJson();
@@ -118,7 +119,7 @@ public class TicketController extends Controller {
 	/**
 	 * this method will return all tickets of a particular project.
 	 * 
-	 * @return
+	 * @return Result
 	 */
 	public static Result getAllProjectTickets() {
 		JsonNode json = request().body().asJson();
@@ -146,7 +147,7 @@ public class TicketController extends Controller {
 	 * this method will return all tickets of a particular project based on
 	 * ticket status
 	 * 
-	 * @return
+	 * @return Result
 	 */
 	public static Result getAllTicketsByStatus() {
 		JsonNode json = request().body().asJson();
@@ -174,7 +175,7 @@ public class TicketController extends Controller {
 	 * this method will return all tickets of a particular project based on
 	 * ticket status
 	 * 
-	 * @return
+	 * @return Result
 	 */
 	public static Result getTicketsByProjectAndStatus() {
 		JsonNode json = request().body().asJson();
@@ -203,7 +204,7 @@ public class TicketController extends Controller {
 	 * this method will return all tickets of a particular project based on
 	 * ticket status
 	 * 
-	 * @return
+	 * @return Result
 	 */
 	public static Result getTicketsByMileStone() {
 		JsonNode json = request().body().asJson();
@@ -230,7 +231,7 @@ public class TicketController extends Controller {
 	 * this method will return all tickets of a particular project based on
 	 * ticket status
 	 * 
-	 * @return
+	 * @return Result
 	 */
 	public static Result getTicketsByMileStoneAndStatus() {
 		JsonNode json = request().body().asJson();
@@ -260,8 +261,7 @@ public class TicketController extends Controller {
 	/**
 	 * this method will return all tickets of a particular project based on
 	 * ticket status
-	 * 
-	 * @return
+	 * @return Result
 	 */
 	public static Result updateMileStone() {
 		JsonNode json = request().body().asJson();
@@ -288,7 +288,37 @@ public class TicketController extends Controller {
 		}
 		return ok(TracerUtil.failureResponse());
 	}
-
+  
+	
+	/**
+	 * this method will return all tickets of a particular project based on
+	 * ticket status
+	 * @return Result
+	 */
+	public static Result getTicketByPidMileStoneAndStatus() {
+		JsonNode json = request().body().asJson();
+		long userId = 0;
+		String session = null;
+		long mileStoneId = 0L;
+		String status = null;
+		int projectId =0;
+		try {
+			session = json.get(JsonKey.SESSION).asText();
+			userId = json.get(JsonKey.USER_ID).asLong();
+			mileStoneId = json.get(JsonKey.MILE_STONE_ID).asLong();
+			status = json.get(JsonKey.STATUS).asText();
+			projectId = json.get(JsonKey.PROJECT_ID).asInt();
+		} catch (Exception e) {
+			TrackLogger.error(e.getMessage(), className);
+			return ok(TracerUtil.InvalidDataResponse());
+		}
+		Session userSession = TracerUtil.checkSession(session, userId);
+		if (userSession == null) {
+			return ok(TracerUtil.invalidSessionResponse());
+		}
+		List<Ticket>  tickets = TicketService.instance.getTicketByPidMileStoneAndStatus(projectId, mileStoneId,status);
+		return ok(TracerUtil.successResponse(tickets));
+	}
 	
 	
 	
@@ -296,8 +326,8 @@ public class TicketController extends Controller {
 	/**
 	 * this method is used to parse user requested data to ticket object.
 	 * 
-	 * @param json
-	 * @return
+	 * @param json JsonNode
+	 * @return Result
 	 */
 	private static Ticket parseCreateTicketData(JsonNode json) {
 		Ticket ticket = null;

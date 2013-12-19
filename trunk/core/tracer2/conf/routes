@@ -22,5 +22,6 @@ POST   /v1/getTicketByMileStoneAndStatus      controllers.TicketController.getTi
 POST   /v1/getMasterData      							controllers.UserController.provideMasterData()
 POST   /v1/getUserDetails      							controllers.UserController.getUserDetails()
 POST   /v1/updateMileStone      							controllers.TicketController.updateMileStone()
+POST   /v1/getTicketByPidMidAndStatus      	controllers.TicketController.getTicketByPidMileStoneAndStatus()
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
