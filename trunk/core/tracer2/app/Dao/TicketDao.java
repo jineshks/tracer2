@@ -25,6 +25,9 @@ import com.avaje.ebean.Expression;
  * 
  */
 public enum TicketDao {
+	/*
+	 * TicketDao instance
+	 */
 	instance;
 	private static final String className = TicketDao.class.getName();
 
@@ -252,4 +255,131 @@ public enum TicketDao {
 		        .eq("id", projectId).eq("ticket_status", status).findList();
 	}
 
+	/**
+	 * this method will provide ticket based on mile stone , ticket status
+	 * {active,pending,close etc} and ticket type type may be
+	 * {defect,enhancement , etc}
+	 * 
+	 * @param mileStone
+	 *            long mile stone id
+	 * @param status
+	 *            String status
+	 * @param type
+	 *            int type {1:defect,2:enhancement,3:testing etc}
+	 * @return List<Ticket>
+	 */
+	public List<Ticket> getTicketByMidAndStatusAndType(long mileStone, String status, int type) {
+		return Ebean.createQuery(Ticket.class).where().eq("mile_stone_id", mileStone)
+		        .eq("type_id", type).eq("ticket_status", status).findList();
+	}
+
+	/**
+	 * this method will provide ticket based on ticket status
+	 * {active,pending,close etc} and ticket type type may be
+	 * {defect,enhancement , etc}
+	 * 
+	 * @param status
+	 *            String status
+	 * @param type
+	 *            int type {1:defect,2:enhancement,3:testing etc}
+	 * @return List<Ticket>
+	 */
+	public List<Ticket> getTicketByStatusAndType(String status, int type) {
+		return Ebean.createQuery(Ticket.class).where().eq("type_id", type)
+		        .eq("ticket_status", status).findList();
+	}
+
+	/**
+	 * this method will provide ticket based on ticket type type may be
+	 * {defect,enhancement , etc}
+	 * 
+	 * @param type
+	 *            int type {1:defect,2:enhancement,3:testing etc}
+	 * @return List<Ticket>
+	 */
+	public List<Ticket> getTicketByType(int type) {
+		return Ebean.createQuery(Ticket.class).where().eq("type_id", type).findList();
+	}
+
+	/**
+	 * this method will provide ticket based on project and ticket type type may
+	 * be {defect,enhancement , etc}
+	 * 
+	 * @param projectId
+	 *            int
+	 * @param type
+	 *            int type {1:defect,2:enhancement,3:testing etc}
+	 * @return List<Ticket>
+	 */
+	public List<Ticket> getTicketByProjectAndType(int projectId, int type) {
+		return Ebean.createQuery(Ticket.class).where().eq("type_id", type)
+		        .eq("project_id", projectId).findList();
+	}
+
+	/**
+	 * this method will provide ticket based on project and mileStone and ticket
+	 * type type may be {defect,enhancement , etc}
+	 * 
+	 * @param projectId
+	 *            int
+	 * @param mileStoneId
+	 *            long
+	 * @param type
+	 *            int type {1:defect,2:enhancement,3:testing etc}
+	 * @return List<Ticket>
+	 */
+	public List<Ticket> getTicketByProjectAndMidAndType(int projectId, long mileStoneId, int type) {
+		return Ebean.createQuery(Ticket.class).where().eq("mile_stone_id", mileStoneId)
+		        .eq("type_id", type).findList();
+	}
+
+	/**
+	 * this method will provide ticket based on project and mileStone and status
+	 * and ticket type type may be {defect,enhancement , etc}
+	 * 
+	 * @param projectId
+	 *            int
+	 * @param mileStoneId
+	 *            long
+	 * @param status
+	 * @param type
+	 *            int type {1:defect,2:enhancement,3:testing etc}
+	 * @return List<Ticket>
+	 */
+	public List<Ticket> getTicketByProjectAndMidAndStatusAndType(int projectId, long mileStoneId, String status,
+	        int type) {
+		return Ebean.createQuery(Ticket.class).where().eq("mile_stone_id", mileStoneId)
+		        .eq("type_id", type).eq("ticket_status", status).eq("project_id", projectId).findList();
+	}
+
+	/**
+	 * this method will provide ticket based on project and status and ticket
+	 * type type may be {defect,enhancement , etc}
+	 * 
+	 * @param projectId
+	 *            int
+	 * @param status
+	 * @param type
+	 *            int type {1:defect,2:enhancement,3:testing etc}
+	 * @return List<Ticket>
+	 */
+	public List<Ticket> getTicketByProjectAndStatusAndType(int projectId, String status, int type) {
+		return Ebean.createQuery(Ticket.class).where().eq("type_id", type)
+		        .eq("ticket_status", status).eq("project_id", projectId).findList();
+	}
+
+	/**
+	 * this method will provide ticket based on project and status and ticket
+	 * type type may be {defect,enhancement , etc}
+	 * 
+	 * @param mileStoneId
+	 *            long
+	 * @param type
+	 *            int type {1:defect,2:enhancement,3:testing etc}
+	 * @return List<Ticket>
+	 */
+	public List<Ticket> getTicketByMidAndType(long mileStoneId, int type) {
+		return Ebean.createQuery(Ticket.class).where().eq("mile_stone_id", mileStoneId)
+		        .eq("type_id", type).findList();
+	}
 }

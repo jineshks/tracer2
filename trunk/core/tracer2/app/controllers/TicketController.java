@@ -301,15 +301,17 @@ public class TicketController extends Controller {
 		JsonNode json = request().body().asJson();
 		long userId = 0;
 		String session = null;
-		long mileStoneId = 0L;
-		String status = null;
+		long mileStoneId = 0;
+		String status = "";
 		int projectId =0;
+		int typeId  = 0;
 		try {
 			session = json.get(JsonKey.SESSION).asText();
 			userId = json.get(JsonKey.USER_ID).asLong();
 			mileStoneId = json.get(JsonKey.MILE_STONE_ID).asLong();
 			status = json.get(JsonKey.STATUS).asText();
 			projectId = json.get(JsonKey.PROJECT_ID).asInt();
+			typeId = json.get(JsonKey.TYPE_ID).asInt();
 		} catch (Exception e) {
 			TrackLogger.error(e.getMessage(), className);
 			return ok(TracerUtil.InvalidDataResponse());
@@ -318,7 +320,7 @@ public class TicketController extends Controller {
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		List<Ticket>  tickets = TicketService.instance.getTicketByPidMileStoneAndStatus(projectId, mileStoneId,status);
+		List<Ticket>  tickets = TicketService.instance.getTicketByPidMileStoneAndStatus(projectId, mileStoneId,status,typeId);
 		return ok(TracerUtil.successResponse(tickets));
 	}
 	

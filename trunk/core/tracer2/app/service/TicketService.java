@@ -31,16 +31,49 @@ public enum TicketService {
 	 * @param projectId int
 	 * @param mileStoneId long
 	 * @param status String ('active','closed','pending','')
+	 * @param typeId int
 	 * @return List<Ticket>
 	 */
-	public List<Ticket> getTicketByPidMileStoneAndStatus(int projectId, long mileStoneId, String status) {
+	public List<Ticket> getTicketByPidMileStoneAndStatus(int projectId, long mileStoneId, String status, int typeId) {
 		boolean response = TracerUtil.checkNullOrEmpty(status);
 		TicketDao ticketDao = TicketDao.instance;
 		List<Ticket> tickets = null;
-		if (response) {
+		// here if user is sending status and type id both null/empty or zero
+		// it means user needs data based on project and mile stone only.
+		if (response && typeId == 0) {
 			// then get ticket based on project and mile stone only
 			tickets = ticketDao.getAllTicketByProjectAndMileStone(projectId, mileStoneId);
-		} else {
+		} else if (projectId == 0 && mileStoneId > 0 && !response && typeId > 0) {
+			// here we will collect all ticket based on mileStone ,
+			// status,typeId
+			tickets = ticketDao.getTicketByMidAndStatusAndType(mileStoneId, status, typeId);
+		} else if (projectId == 0 && mileStoneId == 0 && !response && typeId > 0) {
+			// then we need to fetch ticket based on status and type only.
+			tickets = ticketDao.getTicketByStatusAndType(status, typeId);
+		} else if (projectId == 0 && mileStoneId == 0 && response && typeId > 0) {
+			// we need to collect all ticket based on type only.
+			tickets = ticketDao.getTicketByType(typeId);
+		} else if (projectId != 0 && mileStoneId == 0 && response && typeId > 0) {
+			// we will get all ticket based on project and type id
+			tickets = ticketDao.getTicketByProjectAndType(projectId, typeId);
+		} else if (projectId != 0 && mileStoneId != 0 && response && typeId > 0) {
+			// we will get all ticket based on project , mile stone and type id
+			tickets = ticketDao.getTicketByProjectAndMidAndType(projectId, mileStoneId, typeId);
+		} else if (projectId != 0 && mileStoneId != 0 && !response && typeId > 0) {
+			// we will fetch all ticket based on project ,mile stone ,status and
+			// type
+			tickets = ticketDao.getTicketByProjectAndMidAndStatusAndType(projectId, mileStoneId, status, typeId);
+		} else if (projectId == 0 && mileStoneId != 0 && !response && typeId > 0) {
+			// we will fetch all ticket based on milestone , status and type
+			tickets = ticketDao.getTicketByMidAndStatusAndType(mileStoneId, status, typeId);
+		} else if (projectId != 0 && mileStoneId == 0 && !response && typeId > 0) {
+			// we fetch list of ticket based on project status and type
+			tickets = ticketDao.getTicketByProjectAndStatusAndType(projectId, status, typeId);
+		} else if (projectId == 0 && mileStoneId > 0 && response && typeId > 0) {
+			// we fetch list of ticket based on mile stone and type.
+			tickets = ticketDao.getTicketByMidAndType(mileStoneId, typeId);
+		}
+		else {
 			// get project based on all values.
 			tickets = ticketDao.getAllTicketByProjectAndMileStoneAndStatus(projectId, mileStoneId, status);
 		}

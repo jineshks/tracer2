@@ -70,4 +70,5 @@ public class JsonKey {
     public static final String COMPLEXITY_ID = "complexityId";
     public static final String ESTIMATED_HOURS = "estimatedHours";
     public static final String ACTUAL_HOURS = "actualHours";
+    public static final String TYPE_ID = "typeId";
 }
