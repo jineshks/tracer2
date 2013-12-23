@@ -73,9 +73,23 @@ public class Ticket  extends Model{
     public double estimatedHours ;
     
     public double actulHours ;
+    
+    public int progress;
     public static Model.Finder<Long,Ticket> find = new Model.Finder<Long,Ticket>(Long.class, Ticket.class);
     
     /**
+	 * @return the progress
+	 */
+	public int getProgress() {
+		return progress;
+	}
+	/**
+	 * @param progress the progress to set
+	 */
+	public void setProgress(int progress) {
+		this.progress = progress;
+	}
+	/**
 	 * @return the estimatedHours
 	 */
 	public double getEstimatedHours() {

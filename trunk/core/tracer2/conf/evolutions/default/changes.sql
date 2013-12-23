@@ -1,2 +1,7 @@
-ALTER TABLE `trace`.`mile_stone` ADD COLUMN `updatedTime` TIMESTAMP NULL AFTER `project_id`; 
-ALTER TABLE `trace`.`mile_stone` CHANGE `updatedTime` `updatedTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NULL;
+ALTER TABLE  `ticket` ADD COLUMN `progress` INT(3) DEFAULT 0 NULL AFTER `actul_hours`; 
+
+CREATE TABLE `trace`.`test_case`( `id` BIGINT(20) NOT NULL AUTO_INCREMENT, `project_id` BIGINT(20) NOT NULL, `ticket_id` BIGINT(20), `t_case` TEXT NOT NULL, `exp_result` VARCHAR(255), `act_result` TEXT, `is_passed` TINYINT(1) DEFAULT TRUE, `created_by_id` BIGINT(20), `created` DATETIME, PRIMARY KEY (`id`), CONSTRAINT `fk_project_id` FOREIGN KEY (`project_id`) REFERENCES `trace`.`project`(`id`), CONSTRAINT `fk_ticket_id` FOREIGN KEY (`ticket_id`) REFERENCES `trace`.`ticket`(`id`), CONSTRAINT `fk_created_by_id` FOREIGN KEY (`created_by_id`) REFERENCES `trace`.`user`(`id`) );
+
+INSERT INTO `trace`.`test_case`(`id`,`project_id`,`ticket_id`,`t_case`,`exp_result`,`act_result`,`is_passed`,`created_by_id`,`created`) VALUES ( NULL,'1','3','when user try to login with correct credentials , he should got home page as response.','home page','got home page','1','1','2013-12-23 11:11:05'); 
+
+INSERT INTO `trace`.`test_case`(`id`,`project_id`,`ticket_id`,`t_case`,`exp_result`,`act_result`,`is_passed`,`created_by_id`,`created`) VALUES ( NULL,'1','3','when user try with invalid credentials then he should got proper error message.','error message','invalid credentials.','1','2','2013-12-23 11:12:44'); 
