@@ -21,18 +21,18 @@ public class User  extends Model{
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	public long id;
+	private long id;
 	
-	public String name;
+	private String name;
 	
 	@Column(unique=true)
-	public String email;
+	private String email;
 	
 	@Constraints.Required
-	public String phone;
+	private String phone;
 	
 	@Column(name="pwd")
-	public String password;
+	private String password;
   
 	public static Model.Finder<Long,User> find = new Model.Finder<Long,User>(Long.class, User.class);
 

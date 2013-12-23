@@ -23,9 +23,9 @@ public class Type  extends Model{
 	private static final long serialVersionUID = -6544484210624421757L;
 	
 	@Id
-    public Long id;
+	private Long id;
 	@Column(name="ticket_type")
-	public String ticketType;
+	private String ticketType;
 	/**
 	 * @return the id
 	 */

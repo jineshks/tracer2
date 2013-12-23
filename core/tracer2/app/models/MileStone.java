@@ -26,21 +26,21 @@ public class MileStone extends Model {
 	 */
 	private static final long serialVersionUID = 5982733991310792271L;
 	@Id
-	public long id;
+	private long id;
 	
 	@Column(name="mile_stone_name")
-	public String name;
+	private String name;
 	
 	@Column(name="mile_stone_status")
-	public String status;
+	private String status;
 	
 	 @Formats.DateTime(pattern="yyyy-MM-dd HH:mm:ss")
-	    public Date created;
+	 private Date created;
 	    
 	    @Formats.DateTime(pattern="yyyy-MM-dd HH:mm:ss")
-	    public Date ended;
+	    private Date ended;
 	    @ManyToOne
-	    public Project project ;
+	    private Project project ;
 
 	    public static Model.Finder<Long,MileStone> find = new Model.Finder<Long,MileStone>(Long.class, MileStone.class);
 

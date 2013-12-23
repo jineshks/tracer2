@@ -21,10 +21,10 @@ public class Phase  extends Model{
 	private static final long serialVersionUID = -6432390862968562900L;
 
 	@Id
-    public Long id;
+	private Long id;
 	
 	@Column(name="phase_name")
-	public String phaseName;
+	private String phaseName;
    
 	   public static Model.Finder<Long,Phase> find = new Model.Finder<Long,Phase>(Long.class, Phase.class);
 

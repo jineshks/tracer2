@@ -30,51 +30,51 @@ public class Ticket  extends Model{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-    public Long id;
+	private Long id;
     
     @Constraints.Required
-    public String title;
+    private String title;
     
     @Column
-    public String description;
+    private String description;
     
     @Formats.DateTime(pattern="yyyy-MM-dd HH:mm:ss")
-    public Date created;
+    private Date created;
     
     @DateTime(pattern="yyyy-MM-dd HH:mm:ss")
-    public Date updated;
+    private Date updated;
     
     @ManyToOne
-    public Phase phase;
+    private Phase phase;
     
     @Column(name="ticket_status")
-    public String ticketStatus;
+    private String ticketStatus;
    
     @ManyToOne
-    public User owner;
+    private User owner;
     
     @ManyToOne
-    public User creater;
+    private User creater;
     
     @ManyToOne
-    public MileStone mileStone;
+    private MileStone mileStone;
     
     @ManyToOne
-    public Severity severity;
+    private Severity severity;
     
     @ManyToOne
-    public Complexity complexity;
+    private Complexity complexity;
     
     @ManyToOne
-    public Project project;
+    private Project project;
     @ManyToOne
-    public Type type;
+    private Type type;
     
-    public double estimatedHours ;
+    private double estimatedHours ;
     
-    public double actulHours ;
+    private double actulHours ;
     
-    public int progress;
+    private int progress;
     public static Model.Finder<Long,Ticket> find = new Model.Finder<Long,Ticket>(Long.class, Ticket.class);
     
     /**

@@ -28,26 +28,26 @@ public class Project extends Model {
 	 */
 	private static final long serialVersionUID = 1L;
 	@Id
-	public Long id;
+	private Long id;
 	@Column(name = "project_name")
-	public String name;
+	private String name;
 
-	public String description;
+	private String description;
 
 	@Formats.DateTime(pattern = "yyyy-MM-dd HH:mm:ss")
-	public Date created;
+	private Date created;
 
 	@DateTime(pattern = "yyyy-MM-dd HH:mm:ss")
-	public Date updated;
+	private Date updated;
 	@ManyToOne
-	public Visibility visibility;
+	private Visibility visibility;
 	
 	@ManyToOne(cascade=CascadeType.ALL)
-	public List<User> user;
+	private List<User> user;
 	
 	@Column(name="creater")
 	@ManyToOne(cascade=CascadeType.ALL)
-	public User createdBy;
+	private  User createdBy;
 	public static Model.Finder<Long,Project> find = new Model.Finder<Long,Project>(Long.class, Project.class);
 	/**
 	 * @return the id

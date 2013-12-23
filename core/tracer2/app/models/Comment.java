@@ -24,19 +24,19 @@ public class Comment extends Model {
 	 */
 	private static final long serialVersionUID = 1L;
 	@Id
-	public int id;
+	private int id;
 	
 	@Column(name="comment_text")
-	public String text;
+	private String text;
 	
 	@Formats.DateTime(pattern="yyyy-MM-dd HH:mm:ss")
-    public Date created;
+    private Date created;
 	
 	@ManyToOne
-	public User user;
+	private User user;
 	
 	@ManyToOne
-	public Ticket ticket;
+	private Ticket ticket;
 	
 	/**
 	 * @return the id

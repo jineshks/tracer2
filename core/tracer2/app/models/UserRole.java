@@ -23,13 +23,13 @@ public class UserRole extends Model {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	public long id;
+	private long id;
 	
 	@ManyToOne
-	public UserRole userRole;
+	private UserRole userRole;
 	
 	@ManyToOne
-	public User user;
+	private User user;
 
 	/**
 	 * @return the id

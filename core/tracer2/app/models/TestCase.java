@@ -14,6 +14,7 @@ import javax.persistence.Table;
 
 import play.data.format.Formats;
 import play.db.ebean.Model;
+import util.DateUtil;
 
 /**
  * @author Manzarul.Haque
@@ -144,8 +145,8 @@ public class TestCase  extends Model{
 	/**
 	 * @return the created
 	 */
-	public Date getCreated() {
-		return created;
+	public String getCreated() {
+		return DateUtil.getFormattedDateWithTimeZone(created);
 	}
 	/**
 	 * @param created the created to set
