@@ -8,6 +8,7 @@ import models.Phase;
 import models.Project;
 import models.Session;
 import models.Severity;
+import models.TestCase;
 import models.Ticket;
 import models.User;
 
@@ -303,8 +304,8 @@ public class TicketController extends Controller {
 		String session = null;
 		long mileStoneId = 0;
 		String status = "";
-		int projectId =0;
-		int typeId  = 0;
+		int projectId =1;
+		int typeId  = 2;
 		try {
 			session = json.get(JsonKey.SESSION).asText();
 			userId = json.get(JsonKey.USER_ID).asLong();
@@ -322,6 +323,38 @@ public class TicketController extends Controller {
 		}
 		List<Ticket>  tickets = TicketService.instance.getTicketByPidMileStoneAndStatus(projectId, mileStoneId,status,typeId);
 		return ok(TracerUtil.successResponse(tickets));
+	}
+	
+	/**
+	 * this method will return all test case
+	 * @return Result
+	 */
+	public static Result getAllTestCase() {
+		JsonNode json = request().body().asJson();
+		long userId = 0;
+		String session = null;
+		long mileStoneId = 0;
+		String status = "";
+		int projectId =1;
+		int typeId  = 2;
+		try {
+			session = json.get(JsonKey.SESSION).asText();
+			userId = json.get(JsonKey.USER_ID).asLong();
+			mileStoneId = json.get(JsonKey.MILE_STONE_ID).asLong();
+			status = json.get(JsonKey.STATUS).asText();
+			projectId = json.get(JsonKey.PROJECT_ID).asInt();
+			typeId = json.get(JsonKey.TYPE_ID).asInt();
+		} catch (Exception e) {
+			TrackLogger.error(e.getMessage(), className);
+		//	return ok(TracerUtil.InvalidDataResponse());
+		}
+	/*	Session userSession = TracerUtil.checkSession(session, userId);
+		if (userSession == null) {
+			return ok(TracerUtil.invalidSessionResponse());
+		}*/
+	List<TestCase> testCases  = 	Ebean.find(TestCase.class).findList();
+		//List<Ticket>  tickets = TicketService.instance.getTicketByPidMileStoneAndStatus(projectId, mileStoneId,status,typeId);
+		return ok(TracerUtil.successResponse(testCases));
 	}
 	
 	
