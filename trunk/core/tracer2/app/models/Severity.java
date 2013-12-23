@@ -20,9 +20,9 @@ public class Severity  extends Model{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-    public Long id;
+	private Long id;
 	
-	public String category;
+	private String category;
 
 	/**
 	 * @return the id

@@ -26,12 +26,12 @@ public class RolePrivileges  extends Model{
 	 */
 	private static final long serialVersionUID = 1L;
 	@Id
-	public long id;
+	private long id;
 	@OneToOne
-	public Role role;
+	private Role role;
 
 	@OneToMany(cascade=CascadeType.ALL)
-	public List<Privileges> privileges ;
+	private List<Privileges> privileges ;
 
 	/**
 	 * @return the id

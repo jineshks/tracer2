@@ -23,7 +23,7 @@ public class Role  extends Model{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	public long id;
+	private long id;
 	
 	@Column(name="role_name")
 	public String name;

@@ -4,7 +4,9 @@
 package Dao;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import models.Comment;
 import models.Complexity;
@@ -19,6 +21,8 @@ import util.TrackLogger;
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Expr;
 import com.avaje.ebean.Expression;
+import com.avaje.ebean.SqlQuery;
+import com.avaje.ebean.SqlRow;
 
 /**
  * @author Manzarul.Haque
@@ -30,7 +34,11 @@ public enum TicketDao {
 	 */
 	instance;
 	private static final String className = TicketDao.class.getName();
-
+   
+	/*
+     * getPhaseSql   
+     */
+	private String getPhaseSql = "select DISTINCT ph.id,ph.phase_name from phase ph,ticket t  where t.project_id = :projectId  and t.phase_id=ph.id ";
 	/**
 	 * this method is for creating new ticket.
 	 * 
@@ -119,7 +127,7 @@ public enum TicketDao {
 	 */
 	public List<Ticket> getAllTicket(long userId) {
 		return Ebean.createQuery(Ticket.class)
-		        .where(Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId))).findList();
+		        .where(Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId))).order().desc("phase_id").findList();
 	}
 
 	/**
@@ -133,7 +141,7 @@ public enum TicketDao {
 	 */
 	public List<Ticket> getAllTicketByProject(long userId, long projectId) {
 		Expression checkForCreater = Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId));
-		return Ebean.createQuery(Ticket.class).where().eq("project_id", projectId).add(checkForCreater).findList();
+		return Ebean.createQuery(Ticket.class).where().eq("project_id", projectId).add(checkForCreater).order().desc("phase_id").findList();
 	}
 
 	/**
@@ -148,7 +156,7 @@ public enum TicketDao {
 	 */
 	public List<Ticket> getAllTicketByStatus(long userId, String status) {
 		Expression checkForCreater = Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId));
-		return Ebean.createQuery(Ticket.class).where().eq("ticket_status", status).add(checkForCreater).findList();
+		return Ebean.createQuery(Ticket.class).where().eq("ticket_status", status).add(checkForCreater).order().desc("phase_id").findList();
 	}
 
 	/**
@@ -166,7 +174,7 @@ public enum TicketDao {
 	public List<Ticket> getAllTicketByProjectAndStatus(long userId, String status, long projectId) {
 		Expression checkForCreater = Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId));
 		return Ebean.createQuery(Ticket.class).where().eq("ticket_status", status).eq("project_id", projectId)
-		        .add(checkForCreater).findList();
+		        .add(checkForCreater).order().desc("phase_id").findList();
 	}
 
 	/**
@@ -180,7 +188,7 @@ public enum TicketDao {
 	 */
 	public List<Ticket> getAllTicketByMileStone(long userId, long mileStoneId) {
 		Expression checkForCreater = Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId));
-		return Ebean.createQuery(Ticket.class).where().eq("mile_stone_id", mileStoneId).add(checkForCreater).findList();
+		return Ebean.createQuery(Ticket.class).where().eq("mile_stone_id", mileStoneId).add(checkForCreater).order().desc("phase_id").findList();
 	}
 
 	/**
@@ -196,7 +204,7 @@ public enum TicketDao {
 	public List<Ticket> getAllTicketByMileStoneAndStatus(long userId, long mileStoneId, String status) {
 		Expression checkForCreater = Expr.or(Expr.eq("owner_id", userId), Expr.eq("creater_id", userId));
 		return Ebean.createQuery(Ticket.class).fetch("mileStone").where().eq("mile_stone_id", mileStoneId)
-		        .eq("mile_stone_status", status).add(checkForCreater).findList();
+		        .eq("mile_stone_status", status).add(checkForCreater).order().desc("phase_id").findList();
 	}
 
 	/**
@@ -381,5 +389,24 @@ public enum TicketDao {
 	public List<Ticket> getTicketByMidAndType(long mileStoneId, int type) {
 		return Ebean.createQuery(Ticket.class).where().eq("mile_stone_id", mileStoneId)
 		        .eq("type_id", type).findList();
+	}
+	
+	
+	/**
+	 * this method will provide all phase 
+	 * details based on project id.
+	 * @param projectId
+	 * @return Map 
+	 */
+	public Map<Integer, String> getPhaseByProject(int projectId) {
+		SqlQuery sqlQuery = Ebean.createSqlQuery(getPhaseSql);
+		Map<Integer, String> phaseMap = new HashMap<Integer, String>();
+		sqlQuery.setParameter("projectId", projectId);
+		List<SqlRow> list = sqlQuery.findList();
+		for (int i = 0; i < list.size(); i++) {
+			SqlRow row = list.get(i);
+			phaseMap.put(row.getInteger("id"), row.getString("phase_name"));
+		}
+		return phaseMap;
 	}
 }

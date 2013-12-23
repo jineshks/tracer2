@@ -20,9 +20,9 @@ public class Visibility  extends Model{
 	 */
 	private static final long serialVersionUID = 1L;
 	@Id
-	public Long id;
+	private Long id;
 	@Column(name = "visibility_type")
-	public String type;
+	private String type;
 	/**
 	 * @return the id
 	 */

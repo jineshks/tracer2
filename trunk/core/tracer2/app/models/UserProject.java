@@ -23,13 +23,13 @@ public class UserProject  extends Model{
 	 */
 	private static final long serialVersionUID = 1L;
 	@Id
-	public long id;
+	private long id;
 	
 	@ManyToOne(cascade=CascadeType.ALL)
-	public User user ;
+	private User user ;
 	
 	@ManyToOne(cascade=CascadeType.ALL)
-	public Project project;
+	private Project project;
 
 	/**
 	 * @return the id

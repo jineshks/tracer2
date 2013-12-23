@@ -29,16 +29,16 @@ public class Session  extends Model {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	public long id;
+	private long id;
 	@Formats.DateTime(pattern = "yyyy-MM-dd HH:mm:ss")
-	public Date created;
+	private Date created;
 
 	@DateTime(pattern = "yyyy-MM-dd HH:mm:ss")
-	public Date updated;
+	private Date updated;
 	
-	public String sessionId;
+	private String sessionId;
 	@ManyToOne
-	public User user;
+	private User user;
 	 public static Model.Finder<Long,Session> find = new Model.Finder<Long,Session>(Long.class, Session.class);
 	/**
 	 * @return the id

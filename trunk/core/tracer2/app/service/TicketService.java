@@ -4,6 +4,7 @@
 package service;
 
 import java.util.List;
+import java.util.Map;
 
 import Dao.TicketDao;
 
@@ -79,5 +80,16 @@ public enum TicketService {
 		}
 		return tickets;
 	}
+	
+	/**
+	 * this method will provide all phase 
+	 * details based on project id.
+	 * @param projectId
+	 * @return  Map
+	 */
+	public Map<Integer, String> getPhaseByProject(int projectId) {
+		return TicketDao.instance.getPhaseByProject(projectId);
+	}
+
 	
 }

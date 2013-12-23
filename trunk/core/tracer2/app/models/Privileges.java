@@ -22,10 +22,10 @@ public class Privileges  extends Model{
 	 */
 	private static final long serialVersionUID = 1L;
 	@Id
-	public long id;
+	private long id;
 	
 	@Column(name="privilege_name")
-	public String name;
+	private String name;
 
 	/**
 	 * @return the id
