@@ -1,16 +1,15 @@
 /**
  * 
  */
-package service;
+package services.service;
 
 import java.util.List;
 import java.util.Map;
 
-import Dao.TicketDao;
-
-import util.TracerUtil;
+import responseBean.TestCaseResponse;
 
 import models.Ticket;
+import models.User;
 
 /**
  * @author Manzarul.Haque
@@ -18,11 +17,7 @@ import models.Ticket;
  * all ticket api related business logic
  * and after that it will call db.
  */
-public enum TicketService {
-	/*
-	 *  TicketService instance. 
-	 */
-	instance;
+public interface TicketService {
    
 	/**
 	 * This method will provide list of ticket based on
@@ -35,51 +30,7 @@ public enum TicketService {
 	 * @param typeId int
 	 * @return List<Ticket>
 	 */
-	public List<Ticket> getTicketByPidMileStoneAndStatus(int projectId, long mileStoneId, String status, int typeId) {
-		boolean response = TracerUtil.checkNullOrEmpty(status);
-		TicketDao ticketDao = TicketDao.instance;
-		List<Ticket> tickets = null;
-		// here if user is sending status and type id both null/empty or zero
-		// it means user needs data based on project and mile stone only.
-		if (response && typeId == 0) {
-			// then get ticket based on project and mile stone only
-			tickets = ticketDao.getAllTicketByProjectAndMileStone(projectId, mileStoneId);
-		} else if (projectId == 0 && mileStoneId > 0 && !response && typeId > 0) {
-			// here we will collect all ticket based on mileStone ,
-			// status,typeId
-			tickets = ticketDao.getTicketByMidAndStatusAndType(mileStoneId, status, typeId);
-		} else if (projectId == 0 && mileStoneId == 0 && !response && typeId > 0) {
-			// then we need to fetch ticket based on status and type only.
-			tickets = ticketDao.getTicketByStatusAndType(status, typeId);
-		} else if (projectId == 0 && mileStoneId == 0 && response && typeId > 0) {
-			// we need to collect all ticket based on type only.
-			tickets = ticketDao.getTicketByType(typeId);
-		} else if (projectId != 0 && mileStoneId == 0 && response && typeId > 0) {
-			// we will get all ticket based on project and type id
-			tickets = ticketDao.getTicketByProjectAndType(projectId, typeId);
-		} else if (projectId != 0 && mileStoneId != 0 && response && typeId > 0) {
-			// we will get all ticket based on project , mile stone and type id
-			tickets = ticketDao.getTicketByProjectAndMidAndType(projectId, mileStoneId, typeId);
-		} else if (projectId != 0 && mileStoneId != 0 && !response && typeId > 0) {
-			// we will fetch all ticket based on project ,mile stone ,status and
-			// type
-			tickets = ticketDao.getTicketByProjectAndMidAndStatusAndType(projectId, mileStoneId, status, typeId);
-		} else if (projectId == 0 && mileStoneId != 0 && !response && typeId > 0) {
-			// we will fetch all ticket based on milestone , status and type
-			tickets = ticketDao.getTicketByMidAndStatusAndType(mileStoneId, status, typeId);
-		} else if (projectId != 0 && mileStoneId == 0 && !response && typeId > 0) {
-			// we fetch list of ticket based on project status and type
-			tickets = ticketDao.getTicketByProjectAndStatusAndType(projectId, status, typeId);
-		} else if (projectId == 0 && mileStoneId > 0 && response && typeId > 0) {
-			// we fetch list of ticket based on mile stone and type.
-			tickets = ticketDao.getTicketByMidAndType(mileStoneId, typeId);
-		}
-		else {
-			// get project based on all values.
-			tickets = ticketDao.getAllTicketByProjectAndMileStoneAndStatus(projectId, mileStoneId, status);
-		}
-		return tickets;
-	}
+	public List<Ticket> getTicketByPidMileStoneAndStatus(int projectId, long mileStoneId, String status, int typeId) ;
 	
 	/**
 	 * this method will provide all phase 
@@ -87,9 +38,97 @@ public enum TicketService {
 	 * @param projectId
 	 * @return  Map
 	 */
-	public Map<Integer, String> getPhaseByProject(int projectId) {
-		return TicketDao.instance.getPhaseByProject(projectId);
-	}
-
+	public Map<Integer, String> getPhaseByProject(int projectId);
+	/**
+	 * This method is used to crate ticket.
+	 * @param ticket Ticket object.
+	 * @param user User object.
+	 * @return boolean
+	 */
+	public boolean createTicket(Ticket ticket , User user) ;
 	
-}
+	/**
+	 * This method is used to update ticket.
+	 * @param description String
+	 * @param ticketStatus String
+	 * @param ticketId  long
+	 * @param user User 
+	 * @return boolean
+	 */
+	public boolean updateTicket(String  description ,String ticketStatus,long ticketId, User user) ;
+	/**
+	 * This method will provide all ticket for that user either it is
+	 * created by him or assign by any other . 
+	 * @param userId long
+	 * @return  List<Ticket>
+	 */
+	public List<Ticket> getAllTicket(long userId) ;
+	
+	/**
+	 * This method will provide all user project for a particular 
+	 * project.
+	 * @param userId  long
+	 * @param projectId  long
+	 * @return  List<Ticket>
+	 */
+	public List<Ticket>  getAllTicketByProject(long userId, long projectId);
+	/**
+	 * This method will provide all ticket for that user based 
+	 * on ticket status.
+	 * @param userId long 
+	 * @param status  String
+	 * @return  List<Ticket>
+	 */
+	public List<Ticket> getAllTicketByStatus(long userId , String status);
+	/**
+	 * This method will provide user all ticket based on status and 
+	 * project.
+	 * @param userId long 
+	 * @param status String
+	 * @param projectId long
+	 * @return  List<Ticket>
+	 */
+	public List<Ticket> getAllTicketByProjectAndStatus(long userId, String status, long projectId);
+	/**
+	 * This method will provide all user ticket based on
+	 * mile stone.
+	 * @param userId  long
+	 * @param mileStoneId long
+	 * @return  List<Ticket>
+	 */
+	public List<Ticket> getAllTicketByMileStone(long userId, long mileStoneId);
+	
+	/**
+	 * This method will provide list of ticket based on user id , mile stone 
+	 * and ticket status.
+	 * @param userId long 
+	 * @param mileStoneId long
+	 * @param status String
+	 * @return List<Ticket>
+	 */
+	public List<Ticket> getAllTicketByMileStoneAndStatus(long userId, long mileStoneId,String status);
+	
+	/**
+	 * This method will update mile stone status and its name.
+	 * @param status String 
+	 * @param mileStoneId long
+	 * @param name String
+	 * @return boolean
+	 */ 
+	public boolean updateMileStone(String status, long mileStoneId, String name);
+	/**
+	 * This method will provide all test case.
+	 * @return  List<TestCaseResponse>
+	 */
+	public List<TestCaseResponse> getAllTestCase();
+	/**
+	 * This method is used to move ticket from one
+	 * phase to another phase or one mile stone to another 
+	 * mileStone. 
+	 * @param ticketId long
+	 * @param phaseId  long
+	 * @param mileStoneId long
+	 * @return  boolean
+	 */
+	public boolean moveTicket(long ticketId,long phaseId,long mileStoneId);
+ }

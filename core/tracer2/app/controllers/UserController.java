@@ -13,14 +13,19 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import responseBean.LoginResponseData;
 import responseBean.MasterDataBean;
-import service.UserService;
+import services.service.UserService;
+import services.serviceFactory.serviceFactory;
+import services.serviceImpl.UserServiceImpl;
 import util.Constants;
 import util.JsonKey;
 import util.TracerUtil;
 import util.TrackLogger;
-import Dao.UserDao;
 
 import com.avaje.ebean.Ebean;
+
+import dataAccess.dao.UserDao;
+import dataAccess.daoFactory.DaoFactory;
+import dataAccess.daoImple.UserDaoImpl;
 
 /**
  * this controller will handle all user related operations.
@@ -35,7 +40,7 @@ public class UserController extends Controller {
 	/**
 	 * this method is used to user login.
 	 * 
-	 * @return  Result
+	 * @return Result
 	 */
 	public static Result login() {
 		JsonNode json = request().body().asJson();
@@ -49,7 +54,7 @@ public class UserController extends Controller {
 			return ok(TracerUtil.InvalidDataResponse());
 		}
 		try {
-			UserService userService = UserService.getInstance();
+			UserService userService = (UserServiceImpl) serviceFactory.getInstance(Constants.USER_SERVICE);
 			LoginResponseData data = userService.login(userName, password);
 			if (data != null) {
 				return ok(TracerUtil.successResponse(data));
@@ -92,8 +97,8 @@ public class UserController extends Controller {
 		if (!hasUserAccess) {
 			return ok(TracerUtil.InvalidAccessResponse());
 		}
-		UserDao userDao = UserDao.getInstance();
-		boolean response = userDao.addProject(projectName, description, visibility, userId);
+		UserService userService = (UserServiceImpl) DaoFactory.getInstance(Constants.USER_SERVICE);
+		boolean response = userService.addProject(projectName, description, visibility, userId);
 		if (response) {
 			return ok(TracerUtil.successResponse());
 		}
@@ -129,8 +134,8 @@ public class UserController extends Controller {
 		if (!hasUserAccess) {
 			return ok(TracerUtil.InvalidAccessResponse());
 		}
-		UserDao userDao = UserDao.getInstance();
-		boolean response = userDao.addUserToProject(assignUserId, projectId);
+		UserService userService = (UserServiceImpl) DaoFactory.getInstance(Constants.USER_SERVICE);
+		boolean response = userService.addUserToProject(assignUserId, projectId);
 		if (response) {
 			return ok(TracerUtil.successResponse());
 		}
@@ -167,8 +172,8 @@ public class UserController extends Controller {
 		if (!hasUserAccess) {
 			return ok(TracerUtil.InvalidAccessResponse());
 		}
-		UserDao dao = UserDao.getInstance();
-		boolean response = dao.inviteUser(email);
+		UserService userService = (UserServiceImpl) DaoFactory.getInstance(Constants.USER_SERVICE);
+		boolean response = userService.inviteUser(email);
 		if (response) {
 			return ok(TracerUtil.successResponse());
 		}
@@ -200,8 +205,12 @@ public class UserController extends Controller {
 		user.setName(name);
 		user.setPassword(password);
 		user.setPhone(phone);
-		Ebean.save(user);
-		return ok(TracerUtil.successResponse());
+		UserService userService = (UserServiceImpl) DaoFactory.getInstance(Constants.USER_SERVICE);
+		boolean response = userService.registration(user);
+		if (response) {
+			return ok(TracerUtil.successResponse());
+		}
+		return ok(TracerUtil.failureResponse());
 	}
 
 	/**
@@ -237,15 +246,15 @@ public class UserController extends Controller {
 		if (project == null) {
 			return ok(TracerUtil.InvalidDataResponse());
 		}
-		UserDao dao = UserDao.getInstance();
+		UserDao userDao = (UserDaoImpl) DaoFactory.getInstance(Constants.USER_DAO);
 		if (Constants.mileStoneSatus.active.toString().equalsIgnoreCase(status)) {
-			boolean isActive = dao.isMileStoneActive(projectId);
+			boolean isActive = userDao.isMileStoneActive(projectId);
 			if (isActive) {
 				return ok(TracerUtil.ActiveMileStone());
 			}
 		}
-
-		boolean response = dao.createMileStone(name, status, ended, project);
+		UserService  service =(UserServiceImpl) serviceFactory.getInstance(Constants.USER_SERVICE);
+		boolean response = service.createMileStone(name, status, ended, project);
 		if (response) {
 			return ok(TracerUtil.successResponse());
 		}
@@ -253,9 +262,8 @@ public class UserController extends Controller {
 	}
 
 	/**
-	*this api will provide current mileStone based 
-	*on project id,other information like severity , 
-	*complexity,phase,ticket type
+	 * this api will provide current mileStone based on project id,other
+	 * information like severity , complexity,phase,ticket type
 	 * 
 	 * @return Result
 	 */
@@ -277,16 +285,17 @@ public class UserController extends Controller {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
 
-		UserDao dao = UserDao.getInstance();
-		MasterDataBean masterDataBean = dao.getMasterData(projectId);
+		UserService userService = (UserServiceImpl) DaoFactory.getInstance(Constants.USER_SERVICE);
+		MasterDataBean masterDataBean = userService.getMasterData(projectId);
 		if (masterDataBean != null) {
 			return ok(TracerUtil.successResponse(masterDataBean));
 		}
 		return ok(TracerUtil.failureResponse());
-	}  
+	}
 
 	/**
-	*this api will provide all user details.
+	 * this api will provide all user details.
+	 * 
 	 * @return Result
 	 */
 	public static Result getUserDetails() {
@@ -304,12 +313,12 @@ public class UserController extends Controller {
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		UserDao dao = UserDao.getInstance();
-		List<User> users = dao.getallUser(userId);
+		UserService userService = (UserServiceImpl) DaoFactory.getInstance(Constants.USER_SERVICE);
+		List<User> users = userService.getallUser(userId);
 		if (users != null) {
 			return ok(TracerUtil.successResponse(users));
 		}
 		return ok(TracerUtil.failureResponse());
-	} 
-	
+	}
+
 }

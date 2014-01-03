@@ -1,7 +1,5 @@
 package controllers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +9,6 @@ import models.Phase;
 import models.Project;
 import models.Session;
 import models.Severity;
-import models.TestPhase;
 import models.Ticket;
 import models.User;
 
@@ -20,16 +17,14 @@ import org.codehaus.jackson.JsonNode;
 import play.mvc.Controller;
 import play.mvc.Result;
 import responseBean.TestCaseResponse;
-import service.TicketService;
+import services.service.TicketService;
+import services.serviceFactory.serviceFactory;
+import services.serviceImpl.TicketServiceImpl;
 import util.Constants;
 import util.JsonKey;
 import util.TracerUtil;
 import util.TrackLogger;
-import Dao.TicketDao;
-
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.SqlQuery;
-import com.avaje.ebean.SqlRow;
+import dataAccess.daoFactory.DaoFactory;
 
 /**
  * this api will control all ticket related actions.
@@ -57,7 +52,8 @@ public class TicketController extends Controller {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
 		User user = userSession.getUser();
-		boolean response = TicketDao.instance.createTicket(ticket, user);
+		TicketService ticketService = (TicketServiceImpl) DaoFactory.getInstance(Constants.TICKET_SERVICE);
+		boolean response = ticketService.createTicket(ticket, user);
 		if (response) {
 			return ok(TracerUtil.successResponse());
 		}
@@ -86,13 +82,13 @@ public class TicketController extends Controller {
 			TrackLogger.error(e.getMessage(), className);
 			return ok(TracerUtil.InvalidDataResponse());
 		}
-
 		Session userSession = TracerUtil.checkSession(session, userId);
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
 		User user = userSession.getUser();
-		boolean response = TicketDao.instance.updateticket(description, ticketStatus, ticketId, user);
+		TicketService ticketService = (TicketServiceImpl) DaoFactory.getInstance(Constants.TICKET_SERVICE);
+		boolean response = ticketService.updateTicket(description, ticketStatus, ticketId, user);
 		if (response) {
 			return ok(TracerUtil.successResponse());
 		}
@@ -119,7 +115,8 @@ public class TicketController extends Controller {
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		List<Ticket> tickets = TicketDao.instance.getAllTicket(userId);
+		TicketService ticketService = (TicketServiceImpl) DaoFactory.getInstance(Constants.TICKET_DAO);
+		List<Ticket> tickets = ticketService.getAllTicket(userId);
 		return ok(TracerUtil.successResponse(tickets));
 	}
 
@@ -146,7 +143,8 @@ public class TicketController extends Controller {
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		List<Ticket> tickets = TicketDao.instance.getAllTicketByProject(userId, projectId);
+		TicketService ticketService = (TicketServiceImpl) DaoFactory.getInstance(Constants.TICKET_SERVICE);
+		List<Ticket> tickets = ticketService.getAllTicketByProject(userId, projectId);
 		return ok(TracerUtil.successResponse(tickets));
 	}
 
@@ -169,12 +167,12 @@ public class TicketController extends Controller {
 			TrackLogger.error(e.getMessage(), className);
 			return ok(TracerUtil.InvalidDataResponse());
 		}
-		Session userSession = Ebean.createQuery(Session.class).where().eq("sessionId", session).eq("user_id", userId)
-		        .findUnique();
+		Session userSession = TracerUtil.checkSession(session, userId);
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		List<Ticket> tickets = TicketDao.instance.getAllTicketByStatus(userId, status);
+		TicketService ticketService = (TicketServiceImpl) DaoFactory.getInstance(Constants.TICKET_SERVICE);
+		List<Ticket> tickets = ticketService.getAllTicketByStatus(userId, status);
 		return ok(TracerUtil.successResponse(tickets));
 	}
 
@@ -203,7 +201,8 @@ public class TicketController extends Controller {
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		List<Ticket> tickets = TicketDao.instance.getAllTicketByProjectAndStatus(userId, status, projectId);
+		TicketService ticketService = (TicketServiceImpl) DaoFactory.getInstance(Constants.TICKET_SERVICE);
+		List<Ticket> tickets = ticketService.getAllTicketByProjectAndStatus(userId, status, projectId);
 		return ok(TracerUtil.successResponse(tickets));
 	}
 
@@ -230,7 +229,8 @@ public class TicketController extends Controller {
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		List<Ticket> tickets = TicketDao.instance.getAllTicketByMileStone(userId, mileStoneId);
+		TicketService ticketService = (TicketServiceImpl) DaoFactory.getInstance(Constants.TICKET_SERVICE);
+		List<Ticket> tickets = ticketService.getAllTicketByMileStone(userId, mileStoneId);
 		return ok(TracerUtil.successResponse(tickets));
 	}
 
@@ -259,12 +259,11 @@ public class TicketController extends Controller {
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		List<Ticket> tickets = TicketDao.instance.getAllTicketByMileStoneAndStatus(userId, mileStoneId, status);
+		TicketService ticketService = (TicketServiceImpl) DaoFactory.getInstance(Constants.TICKET_SERVICE);
+		List<Ticket> tickets = ticketService.getAllTicketByMileStoneAndStatus(userId, mileStoneId, status);
 		return ok(TracerUtil.successResponse(tickets));
 	}
 
-	
-	
 	/**
 	 * this method will return all tickets of a particular project based on
 	 * ticket status
@@ -291,17 +290,18 @@ public class TicketController extends Controller {
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		boolean updateStatus = TicketDao.instance.updateMileStone(status, mileStoneId,name);
+		TicketService ticketService = (TicketServiceImpl) DaoFactory.getInstance(Constants.TICKET_SERVICE);
+		boolean updateStatus = ticketService.updateMileStone(status, mileStoneId, name);
 		if (updateStatus) {
 			return ok(TracerUtil.successResponse());
 		}
 		return ok(TracerUtil.failureResponse());
 	}
-  
-	
+
 	/**
 	 * this method will return all tickets of a particular project based on
 	 * ticket status
+	 * 
 	 * @return Result
 	 */
 	public static Result getTicketByPidMileStoneAndStatus() {
@@ -310,8 +310,8 @@ public class TicketController extends Controller {
 		String session = null;
 		long mileStoneId = 0;
 		String status = "";
-		int projectId =1;
-		int typeId  = 2;
+		int projectId = 1;
+		int typeId = 2;
 		try {
 			session = json.get(JsonKey.SESSION).asText();
 			userId = json.get(JsonKey.USER_ID).asLong();
@@ -327,12 +327,14 @@ public class TicketController extends Controller {
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		List<Ticket>  tickets = TicketService.instance.getTicketByPidMileStoneAndStatus(projectId, mileStoneId,status,typeId);
+		TicketService ticketService = (TicketServiceImpl) serviceFactory.getInstance(Constants.TICKET_SERVICE);
+		List<Ticket> tickets = ticketService.getTicketByPidMileStoneAndStatus(projectId, mileStoneId, status, typeId);
 		return ok(TracerUtil.successResponse(tickets));
 	}
-	
+
 	/**
 	 * this method will return all test case
+	 * 
 	 * @return Result
 	 */
 	public static Result getAllTestCase() {
@@ -352,53 +354,20 @@ public class TicketController extends Controller {
 			typeId = json.get(JsonKey.TYPE_ID).asInt();
 		} catch (Exception e) {
 			TrackLogger.error(e.getMessage(), className);
-			// return ok(TracerUtil.InvalidDataResponse());
+			return ok(TracerUtil.InvalidDataResponse());
 		}
-		/*
-		 * Session userSession = TracerUtil.checkSession(session, userId); if
-		 * (userSession == null) { return
-		 * ok(TracerUtil.invalidSessionResponse()); }
-		 */
-		String sql = "select t.id as testId, t.t_case,t.exp_result,t.act_result,t.is_passed,t.created,usr.id as createrId,usr.name,p.id as projectId,p.project_name,tic.id as ticketId,tic.title from test_case t,project p, ticket tic,user usr where t.project_id=p.id  and t.ticket_id =tic.id and t.created_by_id=usr.id";
-		String getTestPhase = "select ph.id, ph.phase,ph.status from test_phase ph where ph.test_case_id = :testCaseId";
-		List<TestCaseResponse> testCaseResponses = new ArrayList<TestCaseResponse>();
-		SqlQuery sqlQuery = Ebean.createSqlQuery(sql);
-		List<SqlRow> list = sqlQuery.findList();
-		for (int i = 0; i < list.size(); i++) {
-			TestCaseResponse caseResponse = new TestCaseResponse();
-			SqlRow row = list.get(i);
-			caseResponse.setTestId(row.getLong("testId"));
-			caseResponse.setProjectId(row.getLong("projectId"));
-			caseResponse.setTicketid(row.getLong("ticketId"));
-			caseResponse.setCreaterId(row.getLong("createrId"));
-			caseResponse.setCreaterName(row.getString("name"));
-			caseResponse.setActResult(row.getString("act_result"));
-			caseResponse.setExpResult(row.getString("exp_result"));
-			caseResponse.setTestCase(row.getString("t_case"));
-			caseResponse.setCreatedDate(row.getString("created"));
-			caseResponse.setTitle(row.getString("title"));
-
-			SqlQuery phaseSql = Ebean.createSqlQuery(getTestPhase);
-			phaseSql.setParameter("testCaseId", caseResponse.getTestId());
-			List<SqlRow> phaseList = phaseSql.findList();
-			List<TestPhase> phases = new ArrayList<TestPhase>();
-			for (int j = 0; j < phaseList.size(); j++) {
-				TestPhase phase = new TestPhase();
-				SqlRow phaseRow = phaseList.get(j);
-				phase.setId(phaseRow.getInteger("id"));
-				phase.setPhase(phaseRow.getInteger("phase"));
-				phase.setStatus(phaseRow.getBoolean("status"));
-				phases.add(phase);
-			}
-			caseResponse.setPhase(phases);
-			testCaseResponses.add(caseResponse);
+		Session userSession = TracerUtil.checkSession(session, userId);
+		if (userSession == null) {
+			return ok(TracerUtil.invalidSessionResponse());
 		}
+		TicketService ticketService = (TicketServiceImpl) serviceFactory.getInstance(Constants.TICKET_SERVICE);
+		List<TestCaseResponse> testCaseResponses = ticketService.getAllTestCase();
 		return ok(TracerUtil.successResponse(testCaseResponses));
 	}
 
 	/**
-	 * this method will return all phase for a
-	 * particular project.
+	 * this method will return all phase for a particular project.
+	 * 
 	 * @return Result
 	 */
 	public static Result getPhaseByProject() {
@@ -418,14 +387,54 @@ public class TicketController extends Controller {
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		Map<Integer, String> phaseMap = TicketService.instance.getPhaseByProject(projectId);
+		TicketService ticketService = (TicketServiceImpl) serviceFactory.getInstance(Constants.TICKET_SERVICE);
+		Map<Integer, String> phaseMap = ticketService.getPhaseByProject(projectId);
 		return ok(TracerUtil.successResponse(phaseMap));
 	}
+
+	
+	/**
+	 * this method will be called when user move ticket from
+	 * one phase to another phase or move it from one mile stone
+	 * to another.
+	 * @return Result
+	 */
+	public static Result moveTicket() {
+		JsonNode json = request().body().asJson();
+		long userId = 0;
+		String session = null;
+		long ticketId = 0L;
+		long phaseId = 0l;
+		long mileStoneId = 0L;
+		try {
+			session = json.get(JsonKey.SESSION).asText();
+			userId = json.get(JsonKey.USER_ID).asLong();
+			ticketId = json.get(JsonKey.TICKET_ID).asLong();
+			phaseId = json.get(JsonKey.PHASE_ID).asLong();
+			mileStoneId = json.get(JsonKey.MILE_STONE_ID).asLong();
+		} catch (Exception e) {
+			TrackLogger.error(e.getMessage(), className);
+			return ok(TracerUtil.InvalidDataResponse());
+		}
+		Session userSession = TracerUtil.checkSession(session, userId);
+		if (userSession == null) {
+			return ok(TracerUtil.invalidSessionResponse());
+		}
+		TicketService ticketService = (TicketServiceImpl) serviceFactory.getInstance(Constants.TICKET_SERVICE);
+		boolean response = ticketService.moveTicket(ticketId, phaseId, mileStoneId);
+		if (response) {
+			return ok(TracerUtil.successResponse());
+		}
+		return ok(TracerUtil.failureResponse());
+	}
+
+	
 	
 	/**
 	 * this method is used to parse user requested data to ticket object.
 	 * 
-	 * @param json JsonNode
+	 * @param json
+	 *            JsonNode
 	 * @return Result
 	 */
 	private static Ticket parseCreateTicketData(JsonNode json) {
