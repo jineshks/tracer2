@@ -9,3 +9,8 @@ INSERT INTO  `test_case`(`id`,`project_id`,`ticket_id`,`t_case`,`exp_result`,`ac
 CREATE TABLE  `test_phase`( `id` BIGINT(20) NOT NULL, `phase` INT(3), `status` TINYINT(1) DEFAULT TRUE, `test_case_id` BIGINT(20), PRIMARY KEY (`id`), CONSTRAINT `fk_test_case_id` FOREIGN KEY (`test_case_id`) REFERENCES `tracer`.`test_case`(`id`) );
 
 ALTER TABLE `test_phase` CHANGE `id` `id` BIGINT(20) NOT NULL AUTO_INCREMENT; 
+
+/*2013-12-30*/
+ALTER TABLE  `test_case` ADD COLUMN `milestone_id` BIGINT(20) DEFAULT 0 NULL AFTER `created`; 
+ALTER TABLE  `test_case` CHANGE `ticket_id` `ticket_id` BIGINT(20) NOT NULL; 
+ALTER TABLE  `test_phase` CHANGE `test_case_id` `test_case_id` BIGINT(20) NOT NULL; 
