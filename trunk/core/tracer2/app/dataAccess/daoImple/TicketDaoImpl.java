@@ -39,7 +39,7 @@ public class TicketDaoImpl  implements  TicketDao{
 	/*
      * getPhaseSql   
      */
-	private String getPhaseSql = "select DISTINCT ph.id,ph.phase_name from phase ph,ticket t  where t.project_id = :projectId  and t.phase_id=ph.id ";
+	private static final String getPhaseSql = "select DISTINCT ph.id,ph.phase_name from phase ph,ticket t  where t.project_id = :projectId  and t.phase_id=ph.id ";
 	/**
 	 * this method is for creating new ticket.
 	 * 
@@ -431,7 +431,8 @@ public class TicketDaoImpl  implements  TicketDao{
 			mileStone.setId(mileStoneId);
 			ticket.setPhase(phase);
 			ticket.setMileStone(mileStone);
-			Ebean.update(ticket);
+			ticket.update();
+			//Ebean.update(ticket);
 		} catch (Exception e) {
 			TrackLogger.error(e.getMessage(), className);
 			response = false;

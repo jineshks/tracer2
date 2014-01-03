@@ -97,7 +97,7 @@ public class UserController extends Controller {
 		if (!hasUserAccess) {
 			return ok(TracerUtil.InvalidAccessResponse());
 		}
-		UserService userService = (UserServiceImpl) DaoFactory.getInstance(Constants.USER_SERVICE);
+		UserService userService = (UserServiceImpl) serviceFactory.getInstance(Constants.USER_SERVICE);
 		boolean response = userService.addProject(projectName, description, visibility, userId);
 		if (response) {
 			return ok(TracerUtil.successResponse());
@@ -134,7 +134,7 @@ public class UserController extends Controller {
 		if (!hasUserAccess) {
 			return ok(TracerUtil.InvalidAccessResponse());
 		}
-		UserService userService = (UserServiceImpl) DaoFactory.getInstance(Constants.USER_SERVICE);
+		UserService userService = (UserServiceImpl) serviceFactory.getInstance(Constants.USER_SERVICE);
 		boolean response = userService.addUserToProject(assignUserId, projectId);
 		if (response) {
 			return ok(TracerUtil.successResponse());
@@ -172,7 +172,7 @@ public class UserController extends Controller {
 		if (!hasUserAccess) {
 			return ok(TracerUtil.InvalidAccessResponse());
 		}
-		UserService userService = (UserServiceImpl) DaoFactory.getInstance(Constants.USER_SERVICE);
+		UserService userService = (UserServiceImpl) serviceFactory.getInstance(Constants.USER_SERVICE);
 		boolean response = userService.inviteUser(email);
 		if (response) {
 			return ok(TracerUtil.successResponse());
@@ -205,7 +205,7 @@ public class UserController extends Controller {
 		user.setName(name);
 		user.setPassword(password);
 		user.setPhone(phone);
-		UserService userService = (UserServiceImpl) DaoFactory.getInstance(Constants.USER_SERVICE);
+		UserService userService = (UserServiceImpl) serviceFactory.getInstance(Constants.USER_SERVICE);
 		boolean response = userService.registration(user);
 		if (response) {
 			return ok(TracerUtil.successResponse());
@@ -285,7 +285,7 @@ public class UserController extends Controller {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
 
-		UserService userService = (UserServiceImpl) DaoFactory.getInstance(Constants.USER_SERVICE);
+		UserService userService = (UserServiceImpl) serviceFactory.getInstance(Constants.USER_SERVICE);
 		MasterDataBean masterDataBean = userService.getMasterData(projectId);
 		if (masterDataBean != null) {
 			return ok(TracerUtil.successResponse(masterDataBean));
@@ -313,7 +313,7 @@ public class UserController extends Controller {
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		UserService userService = (UserServiceImpl) DaoFactory.getInstance(Constants.USER_SERVICE);
+		UserService userService = (UserServiceImpl) serviceFactory.getInstance(Constants.USER_SERVICE);
 		List<User> users = userService.getallUser(userId);
 		if (users != null) {
 			return ok(TracerUtil.successResponse(users));

@@ -43,28 +43,41 @@ public class TestCaseServiceImpl implements TestCaseService {
 	 * @param isMine boolean
 	 * @return  List<TestCase>
 	 */
-	public List<TestCaseResponse> getTestCase(long userId,long mileStoneId,long projectId,long ticketId,boolean isMine){
-		   //here we will check all possible combinations.
-			if(ticketId>0 && !isMine ) {
-				//then send all test case for that ticket and for that user only.
-			} else if(projectId> 0 && mileStoneId ==0 ) {
-				//then send all test cases for that project
-			} else if(projectId==0 &&mileStoneId>0) {
-				//send all test cases for that mile stone only.
-			}else if(projectId >0 &&mileStoneId>0 && !isMine) {
-				//send all test cases for that project and mile stone 
-			} else if(projectId >0 &&mileStoneId>0 && isMine) {
-				//send all test cases for that mile stone and  project id and which is created by me only.
-			}else if(projectId >0 &&mileStoneId==0 && isMine) {
-				//send all test cases for that  project id and which is created by me only.
-			}else if(projectId == 0 &&mileStoneId>0 && isMine) {
-				//send all test cases for that  mile stone  and which is created by me only.
-			}
-			else if (mileStoneId==0 && ticketId == 0 && projectId == 0 && userId >0) {
-				//send all test cases for particular user only.
-			} else {
-				//send all test cases
-			}
-		return null;
+	public List<TestCaseResponse> getTestCase(long userId, long mileStoneId, long projectId, long ticketId,
+	        boolean isMine) {
+		TestCaseDao testCaseDao = (TestCaseDaoImpl) DaoFactory.getInstance(Constants.TESTCASE_DAO);
+		List<TestCaseResponse> caseResponses = null;
+		// here we will check all possible combinations.
+		if (ticketId > 0 && !isMine) {
+			// then send all test case for that ticket only.
+			caseResponses = testCaseDao.getTestCaseByTicket(ticketId);
+		} else if (projectId > 0 && mileStoneId == 0) {
+			// then send all test cases for that project
+			caseResponses = testCaseDao.getTestCaseByProject(projectId);
+		} else if (projectId == 0 && mileStoneId > 0) {
+			// send all test cases for that mile stone only.
+			caseResponses = testCaseDao.getTestCaseByMileStone(mileStoneId);
+		} else if (projectId > 0 && mileStoneId > 0 && !isMine) {
+			// send all test cases for that project and mile stone
+			caseResponses = testCaseDao.getTestCaseByMileStone(mileStoneId);
+		} else if (projectId > 0 && mileStoneId > 0 && isMine) {
+			// send all test cases for that mile stone and project id and which
+			// is created by me only.
+			caseResponses = testCaseDao.getTestCaseByUserAndMileStone(mileStoneId, userId);
+		} else if (projectId > 0 && mileStoneId == 0 && isMine) {
+			// send all test cases for that project id and which is created by
+			// me only.
+			caseResponses = testCaseDao.getTestCaseByProjectAndUser(projectId, userId);
+		} else if (projectId == 0 && mileStoneId > 0 && isMine) {
+			// send all test cases for that mile stone and which is created by
+			// me only.
+			caseResponses = testCaseDao.getTestCaseByUserAndMileStone(mileStoneId, userId);
+		} else if (mileStoneId == 0 && ticketId == 0 && projectId == 0 && userId > 0) {
+			// send all test cases for particular user only.
+			caseResponses = testCaseDao.getTestCaseByUser(userId);
+		} else {
+			// send all test cases
+		}
+		return caseResponses;
 	}
 }
