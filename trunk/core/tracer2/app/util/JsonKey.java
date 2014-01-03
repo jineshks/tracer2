@@ -71,4 +71,9 @@ public class JsonKey {
     public static final String ESTIMATED_HOURS = "estimatedHours";
     public static final String ACTUAL_HOURS = "actualHours";
     public static final String TYPE_ID = "typeId";
+    public static final String TEST_CASE = "testCase";
+    public static final String EXPECETED_RESULT = "expResult";
+    public static final String ACTUAL_RESULT = "actResult";
+    public static final String IS_MINE = "isMine";
+    
 }

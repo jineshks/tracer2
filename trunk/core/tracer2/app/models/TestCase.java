@@ -8,7 +8,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -31,7 +30,7 @@ public class TestCase  extends Model{
    private long id ;  
 	@OneToOne
 	private Project project;
-	@OneToMany
+	@OneToOne
 	private Ticket ticket;
 	@Column (name="t_case")
 	private String testCase; 
@@ -46,7 +45,10 @@ public class TestCase  extends Model{
 	private User createdBy;
 	 @Formats.DateTime(pattern="yyyy-MM-dd HH:mm:ss")
 	    private Date created;
-	/**
+	 @Column(name = "milestone_id")
+	 private long mileStoneId;
+
+	 /**
 	 * @return the id
 	 */
 	public long getId() {
@@ -154,5 +156,16 @@ public class TestCase  extends Model{
 	public void setCreated(Date created) {
 		this.created = created;
 	}
-	 
+	/**
+	 * @return the mileStoneId
+	 */
+	public long getMileStoneId() {
+		return mileStoneId;
+	}
+	/**
+	 * @param mileStoneId the mileStoneId to set
+	 */
+	public void setMileStoneId(long mileStoneId) {
+		this.mileStoneId = mileStoneId;
+	}
 }

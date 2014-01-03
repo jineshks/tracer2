@@ -6,7 +6,7 @@ package models;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import play.db.ebean.Model;
@@ -28,7 +28,7 @@ public class TestPhase  extends Model{
     @Id
     private long id;
     @Column(name="test_case_id")
-    @OneToMany
+    @OneToOne
     private TestCase testCase;
 	/**
 	 * @return the phase

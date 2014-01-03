@@ -1,52 +1,21 @@
 /**
  * 
  */
-package service;
+package services.service;
 
-import Dao.UserDao;
+import java.util.List;
+
+import models.Project;
+import models.User;
 import responseBean.LoginResponseData;
-import util.TrackLogger;
+import responseBean.MasterDataBean;
 
 /**
  * @author Manzarul.Haque
  *
  */
-public class UserService {
-	private static final String className = UserService.class.getName();
-	private static UserService service ;
-	static {
-		try {
-	        service = new UserService();
-        } catch (CloneNotSupportedException e) {
-        	TrackLogger.error(e.getMessage(), className);
-        }
-	}
-    /**
-     * UserService default constructor.
-     */
-	private UserService () throws CloneNotSupportedException{
-		if(service != null) 
-			throw  new CloneNotSupportedException();
-		
-	}
-	
-	public UserService clone() throws CloneNotSupportedException {
-		throw  new CloneNotSupportedException();
-	}
-	
-	/**
-	 * this method will provide UserService instance
-	 * @return UserService instance
-	 * @throws CloneNotSupportedException
-	 */
-	public  static UserService getInstance()  throws CloneNotSupportedException{
-		if(service != null) {
-			return service;
-		}
-		service = new UserService();
-		return service;
-	}
-	
+public interface UserService {
+
 	/**
 	 * this method will check user is valid or not.
 	 * if user is valid then it will provide all project 
@@ -55,10 +24,57 @@ public class UserService {
 	 * @param password  String password
 	 * @return LoginResponseData
 	 */
-	public LoginResponseData login(String userName, String password) { 
-		UserDao dao = UserDao.getInstance();
-		return dao.login(userName, password);
-	}
-	
+	public LoginResponseData login(String userName, String password);
+	/**
+	 * This method will add a new project.
+	 * @param projectName String 
+	 * @param description String
+	 * @param visibility int 
+	 * @param userId long
+	 * @return boolean
+	 */
+	public boolean addProject(String projectName,String description, int visibility, long userId);
+	/**
+	 * This method is used to add new user to the project.
+	 * @param userId long
+	 * @param projectId long
+	 * @return boolean
+	 */
+	public boolean addUserToProject(long userId, long projectId);
+	/**
+	 * This method is used to invite user to join 
+	 * tracer.
+	 * @param email String
+	 * @return boolean
+	 */
+	public boolean inviteUser(String email);
+	/**
+	 * This method is for user registration.
+	 * @param user User 
+	 * @return boolean
+	 */
+	public boolean registration(User user);
+	/**
+	 * This method is for creating new mile stone.
+	 * @param name String 
+	 * @param status  String
+	 * @param endDate String
+	 * @param project Project
+	 * @return boolean
+	 */
+	public boolean createMileStone(String name, String status, String endDate , Project project);
+	/**
+	 * This method will provide all maseter data related 
+	 * to project.
+	 * @param projectId long
+	 * @return MasterDataBean
+	 */
+	public  MasterDataBean getMasterData(long projectId);
+	/**
+	 * This method will provide all user details.
+	 * @param userId long
+	 * @return  List<User>
+	 */
+	public List<User>  getallUser(long userId);
 	
 }
