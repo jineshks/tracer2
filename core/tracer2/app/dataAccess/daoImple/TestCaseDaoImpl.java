@@ -26,27 +26,27 @@ import dataAccess.dao.TestCaseDao;
 public class TestCaseDaoImpl  implements TestCaseDao {
 	private static final String className = TestCaseDaoImpl.class.getName();
 	
-	  private final	String sql = "select t.id as testId, t.t_case,t.exp_result,t.act_result,t.is_passed,t.created,usr.id as createrId,usr.name," +
+	  private final static	String sql = "select t.id as testId, t.t_case,t.exp_result,t.act_result,t.is_passed,t.created,usr.id as createrId,usr.name," +
 	  		" p.id as projectId,p.project_name,tic.id as ticketId,tic.title from test_case t,project p, ticket tic,user usr where t.project_id=p.id " +
-	  		" and t.project_id = :projectId  ";
-	  private final	String GET_TEST_CASE_BY_MILESTONE = "select t.id as testId, t.t_case,t.exp_result,t.act_result,t.is_passed,t.created,usr.id " +
+	  		"  AND t.created_by_id=t.id AND t.ticket_id=tic.id   and t.project_id = :projectId  ";
+	  private final static	String GET_TEST_CASE_BY_MILESTONE = "select t.id as testId, t.t_case,t.exp_result,t.act_result,t.is_passed,t.created,usr.id " +
 	  		" as createrId,usr.name,p.id as projectId,p.project_name,tic.id as ticketId,tic.title from test_case t,project p, ticket tic,user usr,mile_stone ms  " +
-	  		" where t.project_id=p.id and t.milestone_id=ms.id  and t.milestone_id = :mileStoneId ";
-	  private final	String GET_TEST_CASE_BY_TICKET = "select t.id as testId, t.t_case,t.exp_result,t.act_result,t.is_passed,t.created,usr.id  " +
+	  		" where t.project_id=p.id and t.milestone_id=ms.id   AND t.created_by_id=t.id AND t.ticket_id=tic.id   and  t.milestone_id = :mileStoneId ";
+	  private final static	String GET_TEST_CASE_BY_TICKET = "select t.id as testId, t.t_case,t.exp_result,t.act_result,t.is_passed,t.created,usr.id  " +
 	  		" as createrId,usr.name,p.id as projectId,p.project_name,tic.id as ticketId,tic.title from test_case t,project p, ticket tic,user usr  " +
-	  		" where t.project_id=p.id and t.ticket_id=tic.id  and t.ticket_id = :ticketId ";
+	  		" where t.project_id=p.id and t.ticket_id=tic.id AND t.created_by_id=t.id    and t.ticket_id = :ticketId ";
 	  
-	  private final	String GET_TEST_CASE_BY_USER = "select t.id as testId, t.t_case,t.exp_result,t.act_result,t.is_passed,t.created,usr.id  " +
+	  private final static	String GET_TEST_CASE_BY_USER = "select t.id as testId, t.t_case,t.exp_result,t.act_result,t.is_passed,t.created,usr.id  " +
 		  		" as createrId,usr.name,p.id as projectId,p.project_name,tic.id as ticketId,tic.title from test_case t,project p, ticket tic,user usr  " +
 		  		" where t.project_id=p.id and t.ticket_id=tic.id  and t.created_by_id = :userId ";
 	  
-	  private final	String GET_TEST_CASE_BY_USER_PROJECT = "select t.id as testId, t.t_case,t.exp_result,t.act_result,t.is_passed,t.created,usr.id  " +
+	  private final static	String GET_TEST_CASE_BY_USER_PROJECT = "select t.id as testId, t.t_case,t.exp_result,t.act_result,t.is_passed,t.created,usr.id  " +
 		  		" as createrId,usr.name,p.id as projectId,p.project_name,tic.id as ticketId,tic.title from test_case t,project p, ticket tic,user usr  " +
 		  		" where t.project_id=p.id and t.ticket_id=tic.id  and t.created_by_id = :userId  and t.project_id = :projectId";
-	  private final	String GET_TEST_CASE_BY_USER_MILESTONE = "select t.id as testId, t.t_case,t.exp_result,t.act_result,t.is_passed,t.created,usr.id  " +
+	  private final	static String GET_TEST_CASE_BY_USER_MILESTONE = "select t.id as testId, t.t_case,t.exp_result,t.act_result,t.is_passed,t.created,usr.id  " +
 		  		" as createrId,usr.name,p.id as projectId,p.project_name,tic.id as ticketId,tic.title from test_case t,project p, ticket tic,user usr,mile_stone ms   " +
 		  		" where t.project_id=p.id and t.ticket_id=tic.id  and t.created_by_id = :userId  and t.milestone_id=ms.id  and t.milestone_id = :mileStoneId";
-	  private final	String getTestPhase = "select ph.id, ph.phase,ph.status from test_phase ph where ph.test_case_id = :testCaseId";
+	  private final	static String getTestPhase = "select ph.id, ph.phase,ph.status from test_phase ph where ph.test_case_id = :testCaseId";
 	/**
 	 * This method will create Test case.
 	 * @param testCase TestCase

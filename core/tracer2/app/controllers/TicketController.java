@@ -24,7 +24,6 @@ import util.Constants;
 import util.JsonKey;
 import util.TracerUtil;
 import util.TrackLogger;
-import dataAccess.daoFactory.DaoFactory;
 
 /**
  * this api will control all ticket related actions.
@@ -46,13 +45,13 @@ public class TicketController extends Controller {
 		if (ticket == null) {
 			return ok(TracerUtil.InvalidDataResponse());
 		}
-		Session userSession = TracerUtil.checkSession(ticket.getOwner().getPassword(), ticket.getCreater().getId());
+		Session userSession = TracerUtil.checkSession(ticket.getOwner().getEmail(), ticket.getCreater().getId());
 
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
 		User user = userSession.getUser();
-		TicketService ticketService = (TicketServiceImpl) DaoFactory.getInstance(Constants.TICKET_SERVICE);
+		TicketService ticketService = (TicketServiceImpl) serviceFactory.getInstance(Constants.TICKET_SERVICE);
 		boolean response = ticketService.createTicket(ticket, user);
 		if (response) {
 			return ok(TracerUtil.successResponse());
@@ -87,7 +86,7 @@ public class TicketController extends Controller {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
 		User user = userSession.getUser();
-		TicketService ticketService = (TicketServiceImpl) DaoFactory.getInstance(Constants.TICKET_SERVICE);
+		TicketService ticketService = (TicketServiceImpl) serviceFactory.getInstance(Constants.TICKET_SERVICE);
 		boolean response = ticketService.updateTicket(description, ticketStatus, ticketId, user);
 		if (response) {
 			return ok(TracerUtil.successResponse());
@@ -115,7 +114,7 @@ public class TicketController extends Controller {
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		TicketService ticketService = (TicketServiceImpl) DaoFactory.getInstance(Constants.TICKET_DAO);
+		TicketService ticketService = (TicketServiceImpl) serviceFactory.getInstance(Constants.TICKET_SERVICE);
 		List<Ticket> tickets = ticketService.getAllTicket(userId);
 		return ok(TracerUtil.successResponse(tickets));
 	}
@@ -143,7 +142,7 @@ public class TicketController extends Controller {
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		TicketService ticketService = (TicketServiceImpl) DaoFactory.getInstance(Constants.TICKET_SERVICE);
+		TicketService ticketService = (TicketServiceImpl) serviceFactory.getInstance(Constants.TICKET_SERVICE);
 		List<Ticket> tickets = ticketService.getAllTicketByProject(userId, projectId);
 		return ok(TracerUtil.successResponse(tickets));
 	}
@@ -171,7 +170,7 @@ public class TicketController extends Controller {
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		TicketService ticketService = (TicketServiceImpl) DaoFactory.getInstance(Constants.TICKET_SERVICE);
+		TicketService ticketService = (TicketServiceImpl) serviceFactory.getInstance(Constants.TICKET_SERVICE);
 		List<Ticket> tickets = ticketService.getAllTicketByStatus(userId, status);
 		return ok(TracerUtil.successResponse(tickets));
 	}
@@ -201,7 +200,7 @@ public class TicketController extends Controller {
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		TicketService ticketService = (TicketServiceImpl) DaoFactory.getInstance(Constants.TICKET_SERVICE);
+		TicketService ticketService = (TicketServiceImpl) serviceFactory.getInstance(Constants.TICKET_SERVICE);
 		List<Ticket> tickets = ticketService.getAllTicketByProjectAndStatus(userId, status, projectId);
 		return ok(TracerUtil.successResponse(tickets));
 	}
@@ -229,7 +228,7 @@ public class TicketController extends Controller {
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		TicketService ticketService = (TicketServiceImpl) DaoFactory.getInstance(Constants.TICKET_SERVICE);
+		TicketService ticketService = (TicketServiceImpl) serviceFactory.getInstance(Constants.TICKET_SERVICE);
 		List<Ticket> tickets = ticketService.getAllTicketByMileStone(userId, mileStoneId);
 		return ok(TracerUtil.successResponse(tickets));
 	}
@@ -259,7 +258,7 @@ public class TicketController extends Controller {
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		TicketService ticketService = (TicketServiceImpl) DaoFactory.getInstance(Constants.TICKET_SERVICE);
+		TicketService ticketService = (TicketServiceImpl) serviceFactory.getInstance(Constants.TICKET_SERVICE);
 		List<Ticket> tickets = ticketService.getAllTicketByMileStoneAndStatus(userId, mileStoneId, status);
 		return ok(TracerUtil.successResponse(tickets));
 	}
@@ -290,7 +289,7 @@ public class TicketController extends Controller {
 		if (userSession == null) {
 			return ok(TracerUtil.invalidSessionResponse());
 		}
-		TicketService ticketService = (TicketServiceImpl) DaoFactory.getInstance(Constants.TICKET_SERVICE);
+		TicketService ticketService = (TicketServiceImpl) serviceFactory.getInstance(Constants.TICKET_SERVICE);
 		boolean updateStatus = ticketService.updateMileStone(status, mileStoneId, name);
 		if (updateStatus) {
 			return ok(TracerUtil.successResponse());
@@ -455,7 +454,7 @@ public class TicketController extends Controller {
 			ticket.setEstimatedHours(json.get(JsonKey.ESTIMATED_HOURS).asDouble());
 			// here we are setting session id inside phone number for internal
 			// use only.
-			owner.setPassword(json.get(JsonKey.SESSION).asText());
+			owner.setEmail(json.get(JsonKey.SESSION).asText());
 			project.setId(json.get(JsonKey.PROJECT_ID).asLong());
 			creater.setId(json.get(JsonKey.USER_ID).asLong());
 			phase.setId(json.get(JsonKey.PHASE_ID).asLong());
