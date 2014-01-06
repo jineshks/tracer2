@@ -3,6 +3,7 @@
  */
 package services.serviceImpl;
 
+import java.net.URLDecoder;
 import java.util.List;
 
 import models.Project;
@@ -14,6 +15,7 @@ import responseBean.LoginResponseData;
 import responseBean.MasterDataBean;
 import services.service.UserService;
 import util.Constants;
+import util.DataMasking;
 import util.TrackLogger;
 
 /**
@@ -112,5 +114,23 @@ public class UserServiceImpl  implements UserService{
 	public List<User>  getallUser(long userId) {
 		UserDao userDao = (UserDaoImpl) DaoFactory.getInstance(Constants.USER_DAO);
 		return userDao.getallUser(userId);
+	}
+	
+	/**
+	 * This method will verify user incoming name is valid or 
+	 * not. if valid then it will check that user is in our data base or not.
+	 * @param username String user name
+	 * @return   User
+	 */
+	public User verifyLink(String username) {
+		String email = null;
+		try {
+			email = DataMasking.decrypt(username, Constants.SALT);
+		} catch (Exception e) {
+			TrackLogger.error(e.getMessage(), className);
+			return null;
+		}
+		UserDao userDao = (UserDaoImpl) DaoFactory.getInstance(Constants.USER_DAO);
+		return userDao.verifyLink(email);
 	}
 }

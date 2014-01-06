@@ -106,4 +106,12 @@ public  interface UserDao{
 	 * @return boolean
 	 */
 	public boolean registration(User user);
+	
+	/**
+	 * This method will verify user incoming name is valid or 
+	 * not. if valid then it will check that user is in our data base or not.
+	 * @param username String user name
+	 * @return   int
+	 */
+	public User verifyLink(String username);
 }

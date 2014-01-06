@@ -29,5 +29,6 @@ POST    /v1/createTest      					 				controllers.TestCaseController.createTestC
 POST    /v1/getTestCaseByFilter      					 	controllers.TestCaseController.getTestCases()
 POST    /v1/moveTicket      					 				controllers.TicketController.moveTicket()
 POST    /v1/updateTestCase      					 		controllers.TestCaseController.updateTestCase()
+GET    	/v1/verifyUser      					 				controllers.UserController.verifyLink(id: String ?="")
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
