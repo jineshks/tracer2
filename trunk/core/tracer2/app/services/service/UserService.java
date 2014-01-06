@@ -76,5 +76,11 @@ public interface UserService {
 	 * @return  List<User>
 	 */
 	public List<User>  getallUser(long userId);
-	
+	/**
+	 * This method will verify user incoming name is valid or 
+	 * not. if valid then it will check that user is in our data base or not.
+	 * @param username String user name
+	 * @return   User
+	 */
+	public User verifyLink(String username);
 }

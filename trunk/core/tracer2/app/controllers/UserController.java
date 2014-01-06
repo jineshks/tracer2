@@ -1,5 +1,7 @@
 package controllers;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -8,7 +10,9 @@ import models.Session;
 import models.User;
 
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ObjectNode;
 
+import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import responseBean.LoginResponseData;
@@ -17,9 +21,13 @@ import services.service.UserService;
 import services.serviceFactory.serviceFactory;
 import services.serviceImpl.UserServiceImpl;
 import util.Constants;
+import util.DataMasking;
 import util.JsonKey;
 import util.TracerUtil;
 import util.TrackLogger;
+import views.html.registration;
+import views.html.invalidLink;
+import views.html.registrationSuccess;
 
 import com.avaje.ebean.Ebean;
 
@@ -145,7 +153,6 @@ public class UserController extends Controller {
 	/**
 	 * this method is called when admin invite user , that user will get link to
 	 * complete registration.
-	 * 
 	 * @return Result
 	 */
 	public static Result inviteUser() {
@@ -186,31 +193,17 @@ public class UserController extends Controller {
 	 * @return Result
 	 */
 	public static Result registration() {
-		String name = null;
-		String email = null;
-		String password = null;
-		String phone = null;
-		JsonNode json = request().body().asJson();
-		try {
-			name = json.get(JsonKey.NAME).asText();
-			email = json.get(JsonKey.USER_NAME).asText();
-			password = json.get(JsonKey.PASSWORD).asText();
-			phone = json.get(JsonKey.PHONE_NUMBER).asText();
-		} catch (Exception e) {
-			TrackLogger.error(e.getMessage(), className);
-			return ok(TracerUtil.InvalidDataResponse());
-		}
-		User user = new User();
-		user.setEmail(email);
-		user.setName(name);
-		user.setPassword(password);
-		user.setPhone(phone);
+		User user  = null;
+		  user = Form.form(User.class).bindFromRequest().get();
+		  if(user == null) {
+			  return ok(registration.render(user));
+		  }
 		UserService userService = (UserServiceImpl) serviceFactory.getInstance(Constants.USER_SERVICE);
 		boolean response = userService.registration(user);
 		if (response) {
-			return ok(TracerUtil.successResponse());
+			return ok(registrationSuccess.render(user));
 		}
-		return ok(TracerUtil.failureResponse());
+		return ok(registration.render(user));
 	}
 
 	/**
@@ -320,5 +313,18 @@ public class UserController extends Controller {
 		}
 		return ok(TracerUtil.failureResponse());
 	}
-
+	/**
+	 * this method is called when user click on link to get registration page.
+	 * @param id
+	 * @throws Exception
+	 * @return Result
+	 */
+	public static Result verifyLink(String id) throws Exception {
+		UserService userService = (UserServiceImpl) serviceFactory.getInstance(Constants.USER_SERVICE);
+		User user = userService.verifyLink(id);
+		if (user == null) {
+			return ok(invalidLink.render());
+		}
+		return ok(registration.render(user));
+	}
 }

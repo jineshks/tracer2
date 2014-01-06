@@ -48,7 +48,16 @@ RoleAccessNotFound(Constants.ROLE_AUTHORIZATION_FAILED_ID,Constants.AUTHORIZATIO
 /**
  * ActiveMileStone
  */
-ActiveMileStone(Constants.ACTIVE_MILE_STONE,Constants.ACTIVE_MILE_STONE_MSG);
+ActiveMileStone(Constants.ACTIVE_MILE_STONE,Constants.ACTIVE_MILE_STONE_MSG),
+/**
+ * InvalidLink
+ */
+InvalidLink(Constants.INVALID_LINK_ID,Constants.INVALID_LINK_MESSAGE),
+/**
+ *LinkAlradyUsed 
+ */
+LinkAlradyUsed(Constants.LINK_ALREADY_USED_ID,Constants.LINK_ALREADY_USED_MESSAGE)
+;
 
     /**
      * error code contains int value

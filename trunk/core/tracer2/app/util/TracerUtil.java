@@ -202,6 +202,46 @@ public class TracerUtil {
 		return response;
 	}
 	
+	
+	/**
+	 * this method will crate success response and send to 
+	 * controller.
+	 * 
+	 * @return ObjectNode object.
+	 */
+	public static ObjectNode invalidLink() {
+		ObjectNode response = Json.newObject();
+		response.put(JsonKey.STATUS_CODE,
+				ResponseCode.InvalidLink.getErrorCode());
+		response.put(JsonKey.STATUS_MESSAGE,
+				ResponseCode.InvalidLink.getErrorMessage());
+		response.put(JsonKey.ERROR_MESSAGE,ResponseCode.InvalidLink.getErrorMessage());
+			response.put(JsonKey.RESPONSE_DATE, "");
+		TrackLogger.debug("sending data ===>"+response, className);
+		return response;
+	}
+	
+	
+	
+	/**
+	 * this method will crate success response and send to 
+	 * controller.
+	 * 
+	 * @return ObjectNode object.
+	 */
+	public static ObjectNode linkalReadyUsed() {
+		ObjectNode response = Json.newObject();
+		response.put(JsonKey.STATUS_CODE,
+				ResponseCode.LinkAlradyUsed.getErrorCode());
+		response.put(JsonKey.STATUS_MESSAGE,
+				ResponseCode.LinkAlradyUsed.getErrorMessage());
+		response.put(JsonKey.ERROR_MESSAGE,ResponseCode.LinkAlradyUsed.getErrorMessage());
+			response.put(JsonKey.RESPONSE_DATE, "");
+		TrackLogger.debug("sending data ===>"+response, className);
+		return response;
+	}
+	
+	
 	/**
 	 * this method is used to check user have access 
 	 * of particular action or not

@@ -57,6 +57,8 @@ public class Constants {
     public static final int BAD_REQUEST_ID = 400;
     public static final String SERVER_URL = "http://idc.tarento.com:9000/register";
     public static final int ACTIVE_MILE_STONE = 302;
+    public static final int INVALID_LINK_ID = 303;
+    public static final int LINK_ALREADY_USED_ID = 305;
     public static final String ACTIVE_MILE_STONE_MSG = "You already have a active milestone.";
     public static final String TICKET_DAO = "ticketDao";
     public static final String USER_DAO = "userDao";
@@ -64,6 +66,8 @@ public class Constants {
     public static final String TESTCASE_SERVICE = "testCaseService";
     public static final String TESTCASE_DAO = "testCaseDao";
     public static final String USER_SERVICE = "userService";
+    public static final String INVALID_LINK_MESSAGE = "invalid link";
+    public static final String LINK_ALREADY_USED_MESSAGE = "You already used this link.";
     
     public static void main(String[] args) {
 	   TicketStatus ticketStatus []  = TicketStatus.values();

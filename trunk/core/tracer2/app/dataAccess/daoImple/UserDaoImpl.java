@@ -3,6 +3,7 @@
  */
 package dataAccess.daoImple;
 
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -168,7 +169,7 @@ public  class UserDaoImpl implements  UserDao {
 		//	user.setEmail(email);
 		//	Ebean.save(user);
 			final String mailSubject = PropertyReader.readProperty("tracer.invitation.text") + "</br>"
-			        + Constants.SERVER_URL+"?"+DataMasking.encrypt(email, Constants.SALT);
+			        + Constants.SERVER_URL+"?id"+URLEncoder.encode(DataMasking.encrypt(email, Constants.SALT),"UTF-8");
 			final String subject = PropertyReader.readProperty("tracer.registration");
 			new Thread(new Runnable() {
 				@Override
@@ -312,5 +313,21 @@ public  class UserDaoImpl implements  UserDao {
 		return response;
 	}
 	
+	
+	/**
+	 * This method will verify user incoming name is valid or 
+	 * not. if valid then it will check that user is in our data base or not.
+	 * @param username String user name
+	 * @return   User
+	 */
+	public User verifyLink(String username) {
+		User user = Ebean.createQuery(User.class).where().eq("email", username).findUnique();
+		if(user != null) {
+			return null;
+		}
+		user = new User();
+		user.setEmail(username);
+		return user;
+	}
 	
 }
