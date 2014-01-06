@@ -427,8 +427,6 @@ public class TicketController extends Controller {
 		return ok(TracerUtil.failureResponse());
 	}
 
-	
-	
 	/**
 	 * this method is used to parse user requested data to ticket object.
 	 * 

@@ -28,5 +28,6 @@ POST   /v1/getPhaseByProject      					 controllers.TicketController.getPhaseByP
 POST    /v1/createTest      					 				controllers.TestCaseController.createTestCase()
 POST    /v1/getTestCaseByFilter      					 	controllers.TestCaseController.getTestCases()
 POST    /v1/moveTicket      					 				controllers.TicketController.moveTicket()
+POST    /v1/updateTestCase      					 		controllers.TestCaseController.updateTestCase()
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
