@@ -80,7 +80,7 @@ public class TestCaseController  extends Controller {
 		return ok(TracerUtil.failureResponse());
 	}
 	
-	/**
+	/**updateTestCase
 	 * this method will create test cases.
 	 * @return Result
 	 */
@@ -117,6 +117,45 @@ public class TestCaseController  extends Controller {
 	}
 	
 
+	
+	
+	
+	/**
+	 * this method will update an existing test case.
+	 * @return Result
+	 */
+	public static Result updateTestCase() {
+		long userId = 0l;
+		String session;
+		long testCaseId = 0l;
+		String expectedResult;
+		String actualResult;
+		boolean isPassed;
+		try {
+			JsonNode json = request().body().asJson();
+			session = json.get(JsonKey.SESSION).asText();
+			testCaseId = json.get(JsonKey.TICKET_ID).asLong();
+			userId = json.get(JsonKey.USER_ID).asLong();
+			actualResult = json.get(JsonKey.ACTUAL_RESULT).asText();
+			expectedResult = json.get(JsonKey.EXPECETED_RESULT).asText();
+			isPassed = json.get(JsonKey.STATUS).asBoolean();
+		} catch (Exception e) {
+			TrackLogger.error(e.getMessage(), className);
+			return ok(TracerUtil.InvalidDataResponse());
+		}
+		Session userSession = TracerUtil.checkSession(session, userId);
+		if (userSession == null) {
+			return ok(TracerUtil.invalidSessionResponse());
+		}
+		TestCaseService testService = (TestCaseServiceImpl) serviceFactory.getInstance(Constants.TESTCASE_SERVICE);
+		boolean response = testService.updateTestCase(testCaseId, expectedResult, actualResult, isPassed);
+		if (response) {
+			return ok(TracerUtil.successResponse());
+		}
+		return ok(TracerUtil.failureResponse());
+	}
+
+	
 	/**
 	 * This method will wrap all data inside TestCase class.
 	 * @param testCase String

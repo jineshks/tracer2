@@ -432,7 +432,6 @@ public class TicketDaoImpl  implements  TicketDao{
 			ticket.setPhase(phase);
 			ticket.setMileStone(mileStone);
 			ticket.update();
-			//Ebean.update(ticket);
 		} catch (Exception e) {
 			TrackLogger.error(e.getMessage(), className);
 			response = false;

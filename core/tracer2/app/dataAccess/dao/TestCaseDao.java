@@ -63,5 +63,16 @@ public interface TestCaseDao {
 	 * @return  List<TestCaseResponse>
 	 */
 	public List<TestCaseResponse> getTestCaseByUserAndMileStone(long mileStone,long userId);
+	
+	/**
+	 * This method will call test case dao and update
+	 * test case.
+	 * @param testCaseId long
+	 * @param expectResult String
+	 * @param actResult String
+	 * @param isPassed boolean
+	 * @return boolean
+	 */
+	public boolean updateTestCase(long testCaseId,String expectResult,String actResult,boolean isPassed);
 
 }
