@@ -55,7 +55,7 @@ public class Constants {
     public static final int DATA_ERROR_ID = 312;
     public static final int ROLE_AUTHORIZATION_FAILED_ID = 335;
     public static final int BAD_REQUEST_ID = 400;
-    public static final String SERVER_URL = "http://idc.tarento.com:9000/register";
+    public static final String SERVER_URL = "http://172.17.18.183:9998/v1/verifyUser";
     public static final int ACTIVE_MILE_STONE = 302;
     public static final int INVALID_LINK_ID = 303;
     public static final int LINK_ALREADY_USED_ID = 305;

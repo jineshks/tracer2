@@ -169,7 +169,7 @@ public  class UserDaoImpl implements  UserDao {
 		//	user.setEmail(email);
 		//	Ebean.save(user);
 			final String mailSubject = PropertyReader.readProperty("tracer.invitation.text") + "</br>"
-			        + Constants.SERVER_URL+"?id"+URLEncoder.encode(DataMasking.encrypt(email, Constants.SALT),"UTF-8");
+			        + Constants.SERVER_URL+"?id="+URLEncoder.encode(DataMasking.encrypt(email, Constants.SALT),"UTF-8");
 			final String subject = PropertyReader.readProperty("tracer.registration");
 			new Thread(new Runnable() {
 				@Override
